@@ -1,0 +1,118 @@
+
+<configuration>
+	<global>
+		<au3path/>
+		<runtype>0</runtype>
+		<formpath/>
+		<startuptype>0</startuptype>
+		<language>lang_eng.xml</language>
+		<createbackup>0</createbackup>
+		<undolevels>30</undolevels>
+		<maxmrulist>10</maxmrulist>
+		<importdebuglevel>7</importdebuglevel>
+		<updatesaveform>1</updatesaveform>
+	</global>
+	<codegen>
+		<scope>0</scope>
+		<sepchar>|</sepchar>
+		<indentchar>0</indentchar>
+		<indentcount>1</indentcount>
+		<initindent>0</initindent>
+		<oneventmode>0</oneventmode>
+		<generateall>0</generateall>
+		<generatevars>0</generatevars>
+		<lasteventstpl>Default</lasteventstpl>
+		<lastlooptpl>Default</lastlooptpl>
+	</codegen>
+	<designer>
+		<formlive>1</formlive>
+		<formsafe>1</formsafe>
+		<showgrid>1</showgrid>
+		<snaptogrid>1</snaptogrid>
+		<gridxstep>8</gridxstep>
+		<gridystep>8</gridystep>
+		<editoreventmode>0</editoreventmode>
+		<keepsizepos>0</keepsizepos>
+		<snapwindows>1</snapwindows>
+		<keeplayout>1</keeplayout>
+		<codesavemode>0</codesavemode>
+		<expandtree>0</expandtree>
+		<captionasdescr>0</captionasdescr>
+	</designer>
+	<templates>
+		<loop>
+			<template name="Loop Example">
+				<line>%INCLUDES%</line>
+				<line>%OPTIONS%</line>
+				<line>%EXPVARINITCODE%</line>
+				<line>%GUICODE%</line>
+				<line>While 1</line>
+				<line> $nMsg = GUIGetMsg()</line>
+				<line> Switch $nMsg</line>
+				<line>  Case $GUI_EVENT_CLOSE</line>
+				<line>   Exit</line>
+				<line>%LOOPCODEBEGIN%</line>
+				<line>  Case %CONTROL_ID%</line>
+				<line>%LOOPCODEEND%</line>
+				<line> EndSwitch</line>
+				<line>WEnd</line>
+			</template>
+		</loop>
+		<events>
+			<template name="Events Example">
+				<line>%INCLUDES%</line>
+				<line>%OPTIONS%</line>
+				<line>%EXPVARINITCODE%</line>
+				<line>%GUICODE%</line>
+				<line>While 1</line>
+				<line> Sleep(100)</line>
+				<line>WEnd</line>
+				<line>%EVENTSCODEBEGIN%</line>
+				<line>Func %EVENTNAME%()</line>
+				<line/>
+				<line>EndFunc</line>
+				<line>%EVENTSCODEEND%</line>
+			</template>
+		</events>
+	</templates>
+	<toolbars>
+		<Toolbar1 name="Standard Toolbar" dockrow="0" dockpos="-1">actNew,actOpen,actSave,actSeparator,actGenerate,actRun</Toolbar1>
+		<Toolbar2 name="Functions" dockrow="1" dockpos="0">actNewForm,actPopup_grpAlign</Toolbar2>
+		<Toolbar3 name="User toolbar 1" dockrow="1" dockpos="25"/>
+		<Toolbar4 name="User toolbar 2" dockrow="1" dockpos="63"/>
+		<Toolbar5 name="User toolbar 3" dockrow="1" dockpos="96"/>
+	</toolbars>
+	<state/>
+	<mrulist/>
+	<colors>
+		<Designer>
+			<Handle>0</Handle>
+			<HandleBorder>0</HandleBorder>
+			<InactiveHandle>8421504</InactiveHandle>
+			<InactiveHandleBorder>0</InactiveHandleBorder>
+			<MultiselHandle>8421504</MultiselHandle>
+			<MultiselHandleBorder>8421504</MultiselHandleBorder>
+			<LockedHandle>255</LockedHandle>
+			<Grid>0</Grid>
+		</Designer>
+		<ObjInsp>
+			<OIBackground>-16777201</OIBackground>
+			<OILabels>-16777208</OILabels>
+			<OIValues>8388608</OIValues>
+			<OICompRef>128</OICompRef>
+			<OICompRefChild>32768</OICompRefChild>
+			<OICustom1 props="OnClick;OnChange;OnClose;OnMaximize;OnMinimize;OnRestore">32768</OICustom1>
+			<OICustom2>-16777208</OICustom2>
+			<OICustom3>-16777208</OICustom3>
+			<OICustom4>-16777208</OICustom4>
+			<OICustom5>-16777208</OICustom5>
+		</ObjInsp>
+		<OutputWindow>
+			<ErrorMessage>255</ErrorMessage>
+			<WarningMessage>57568</WarningMessage>
+			<InfoMessage>-16777208</InfoMessage>
+			<DebugMessage>-16777208</DebugMessage>
+			<OutWinBackground>-16777211</OutWinBackground>
+		</OutputWindow>
+	</colors>
+</configuration>

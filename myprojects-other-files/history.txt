@@ -1,0 +1,640 @@
+Release 1.7.3.0 build 252 (2010-07-30)
+2010-07-30 - Fixed: tiny language fixes
+
+Beta 1.7.2.9 build 250 RC2 (2010-06-29)
+2010-06-29 - Fixed: partially, toolbars showing issue (thanks Spence)
+2010-06-29 - Fixed: AV when selecting non-existent recent file (thanks Fire)
+2010-04-21 - Added: release date to About dialog
+2010-04-19 - Fixed: crash when changing language in situations when code dialog was opened before
+
+Beta 1.7.2.8 build 247 RC1 (2010-04-15)
+2010-04-15 - Fixed: menu separator "" not generating
+2010-04-15 - Fixed: save button state not updated after end editing text in tree
+2010-04-06 - Fixed: toolbars not saving when executing config dialog from toolbar context menu (thanks Zedna)
+2010-04-05 - Fixed: option "use caption instead name" worked only for label (thanks Zedna)
+2010-04-05 - Added: "show grid" option for graphic editor
+2010-04-05 - Added: hourglass cursor when opening Object browser
+2010-04-05 - Added: invoke Object browser by doubleclick
+2010-04-05 - Fixed: various translation fixes (thanks Zedna)
+2010-03-29 - Fixed: regression in "scite mode" (Koda not closed when click insert button) (thanks asdf8)
+2010-03-27 - Fixed: form modified state was not set when changing styles [FS#123]
+2010-03-27 - Fixed: missed $ at first variable in Resizing output [FS#122]
+2010-03-26 - Fixed: poDesktopCenter not always generated -1 for position (thanks asdf8)
+2010-03-26 - Fixed: GUI_SS_DEFAULT_GUI was not generated for GUI [FS#120]
+
+Beta 1.7.2.7 build 241 (2010-03-25)
+2010-03-25 - Fixed: crash when using undo function on certain forms
+2010-03-25 - Fixed: (probably) AV when deleting Imagelist
+2010-03-25 - Fixed: when deleting Imagelist, an "Images" property cleared for all controls
+2010-03-24 - Added: option to show control caption (if exists) as default tree description
+2010-03-24 - Added: ability for rearrange tabs in Tab control (Alt+Left/Alt+Right)
+2010-03-24 - Fixed: subcontrols for Group/Tab are not showing in the tree after paste
+2010-03-24 - Added: Resizing property for Form, that set default resizing
+2010-03-23 - Added: ability to edit properties for multiple selected menu items
+2010-03-23 - Added: autogenerating hotkeys for Menu and ContextMenu
+2010-03-19 - Fixed: some init messages now show translated
+2010-03-18 - Changed: optimized modules interaction (internal)
+2010-03-17 - Changed: optimized translation initializing (internal)
+
+Beta 1.7.2.6 build 229 (2010-03-15)
+2010-03-15 - Added: hicolor icons support in the templates gallery
+2010-03-14 - Added: nicer icons for standard templates
+2010-03-14 - Fixed: wrong position of event for UpDown [FS#112] (thanks Luciano Scilletta)
+2010-03-11 - Fixed: crash when closing some forms
+2010-03-11 - Added: double percent %% at beginning of string tell generator not parse all remainding string
+2010-03-11 - Fixed: ImageList (and other controls) can not be placed on toolbar anymore
+2010-03-07 - Added: ability to downloading new/localized help files from options dialog
+2010-03-03 - Added: forgotten help contexts
+2010-03-03 - Fixed: wrongly generating "default" styles for styles that have not them [FS#113] (thanks asdf8)
+
+Beta 1.7.2.5 build 222 (2010-03-02)
+2010-03-01 - Added: generating GUI_SS_DEFAULT_* styles (non-zero) [FS#22]
+2010-02-27 - Fixed: revised all default/forced control styles
+2010-02-27 - Added: "Stretch" design-time property for Pic and Icon control [FS#111]
+2010-02-26 - Fixed: optimized Styles Editor and styles definition file
+2010-02-26 - Fixed: attached updown not saving it's value [FS#110]
+2010-02-19 - Changed: nicer Spin control in the inteface
+2010-02-19 - Fixed: wrong font on "Reset" buttons under Win7 (maybe Vista too)
+2010-02-19 - Fixed: removed duplicated XP manifest
+2010-02-19 - Added: UAC-compatible association setting
+2010-02-19 - Changed: "default menu" for TrayMenu is enabled by default
+2010-02-19 - Added: forgotten F2 hotkey for edit labels in tree
+
+Beta 1.7.2.4 build 214 (2010-02-18)
+2010-02-17 - Changed: styles definition changed to new method of handling styles
+2010-02-17 - Added: support for handling state for certain styles [FS#107]
+2010-02-16 - Added: option to keep tree fully expanded or not
+2010-02-15 - Changed: object tree now is not mandatory to be fully expanded
+2010-02-14 - Added: editable control's description in the object tree
+
+Beta 1.7.2.3 build 207 (2010-02-11)
+2010-02-10 - Changed: cleanups in property inspector code
+2010-02-09 - Changed: control styles editor is fully rewritten to support multiple selection
+2010-02-05 - Fixed: serious flaw in translator [FS#101] (thanks Tlem)
+
+Beta 1.7.2.2 build 204 (2010-02-04)
+2010-02-04 - Added: option to not generate ImageList itself when using for Listview/Treeview
+2010-02-03 - Added: warning if user have outdated "styles.xml" file
+2010-02-03 - Added: forgotten styles for Toolbar buttons
+2010-02-03 - Added: ability to generate TreeView with icons
+2010-02-03 - Added: ability to generate ListView with icons
+2010-02-03 - Fixed: visual appearance of ListView control [FS#86]
+2010-02-02 - Added: checking of actual clipboard content on paste [FS#7][FS#57]
+2010-02-02 - Added: ability to save settings in the AppData folder under restricted account
+2010-02-02 - Fixed: crash when running Koda first time under restricted account (thanks Sh3llC043r)
+2010-02-02 - Fixed: small cosmetic issue with translation files (thanks Zedna)
+2010-02-02 - Fixed: various bugs with Graphic editor (thanks Zedna)
+2010-02-01 - Added: ability to generate tabs with icons (GUITab.au3 incluse used)
+2010-02-01 - Fixed: wrong styles visually appearing after form loading [FS#83] (thanks monter.FM)
+2010-02-01 - Fixed: events for menus generated in wrong place [FS#78]
+2010-02-01 - Fixed: event for Tab generated in wrong place [FS#87]
+2010-02-01 - Added: forgotten Icon property for TrayMenu
+2010-02-01 - Added: ability to copy Dummy controls [FS#60]
+2010-02-01 - Changed: redone a bit invisible components handling (internal)
+2010-02-01 - Changed: all Dummy controls are generating in one place [FS#51]
+2010-02-01 - Fixed: generating of custom image path with macro [FS#68]
+2010-02-01 - Fixed: index for GUI icon was not generated [FS#80]
+2010-01-31 - Fixed: enabled states for different items [FS#95] (thanks Tlem)
+2010-01-31 - Fixed: wrong include for Group [FS#90]
+2010-01-31 - Added: French language file (thanks Tlem)
+2009-08-11 - Added: Chinese(Traditional) language file (thanks rexx)
+2009-08-03 - Fixed: form position not reloaded when position is poFixed
+2009-08-03 - Fixed: flaw in saving form options (thanks martin)
+
+Beta 1.7.2.1 build 191 (2009-07-09)
+2009-07-09 - Added: loading images with API function OleLoadPicture instead native Delphi routines (experimental!)
+2009-07-09 - Added: open dialog for images/icons/imagelists now custom and can show libraries preview
+2009-07-08 - Added: Graphic Editor for Graphic control 
+2009-07-05 - Fixed: wrong icon size when adding 256x256 icon [FS#65]
+2009-07-05 - Added: doubleclick on Statusbar invoke panels edittor [FS#26] (thanks Zedna)
+2009-06-28 - Added: button to imagelist editor that allow save list as new 32-bit icon library
+2009-06-28 - Fixed: 16-bit icon library can be loaded under Vista and up, warning will be shown
+
+Release 1.7.2.0 build 180 (2009-06-27)
+2009-06-24 - Fixed: language kit script updated
+2009-06-18 - Changed: improved translation system, english now always up to date, lang_eng.xml not needed anymore
+2009-06-18 - Added: update check function show release notes
+2009-06-18 - Added: about dialog now show Koda revision (build)
+2009-06-16 - Added: tip ability for TabItem
+2009-06-16 - Added: ability to coloring a Combo
+2009-06-08 - Fixed: unable to set control color that equal to it's default system color [FS#64] (thanks Valik)
+2009-06-06 - Changed: format of update checking, more information can be available now
+2009-05-30 - Fixed: again - indentation when updating script [FS#63] (thanks Valik)
+2009-04-30 - Fixed: paste control from ObjectTree context menu -> control position outside form [FS#53] (thanks Zedna)
+2009-04-30 - Fixed: selection was not shown in Object Tree when calling Select All, and when mouse cursor was on the tree [FS#52] (thanks Zedna)
+2009-04-30 - Fixed: wrong Import dialog size in 120 dpi [FS#50] (thanks Ernst Mathys)
+2009-04-29 - Fixed: outdated link for checking [FS#54] (thanks Zedna)
+
+Release 1.7.1.0 (2009-04-27)
+2009-04-19 - Fixed: AV when resetting Style/ExStyle [FS#48] (thanks Zedna)
+2009-04-17 - Fixed: Resizing - generated code is wrong (default) [FS#47] (thanks Zedna)
+2009-04-13 - Added: hotkey property for Dummy control [FS#45] (thanks BaKaMu)
+2009-04-12 - Fixed: removed some unnecessary properties
+
+Beta 1.7.0.11 (2009-04-12) RC2
+2009-03-25 - Fixed: TAObj control loose it's dimensions after reloading [FS#40] (thanks BaKaMu)
+2009-03-25 - Fixed: font for the TAdate control is not generating [FS#39] (thanks BaKaMu)
+
+Beta 1.7.0.10 (2009-03-25) RC1
+2009-03-25 - Fixed: various small translation fixes
+2009-03-19 - Fixed: Import - bad ClientWidth, ClientHeight, Position [FS#36] (thanks Zedna)
+2009-03-13 - Added: special "group of controls" control [FS#19] (thanks Zedna)
+
+Beta 1.7.0.9 (2009-02-10)
+2009-02-09 - Fixed: handling of "-1" for styles in Au3import
+2009-02-09 - Added: icon selector now can select standard and small icons for the Button (thanks socratessa)
+2009-02-09 - Fixed: handling of CustomPath where was icons with index (thanks socratessa)
+2009-02-06 - Fixed: Koda can handle uncompressed 256x256 Vista icons
+2009-02-05 - Fixed: correct Align in window calculations (thanks Valik)
+2009-02-05 - Fixed: indentation when updating script (thanks Valik)
+2009-02-05 - Changed: Updown no more raise error when entering incorrect value (thanks Valik)
+2009-02-05 - Fixed: StatusBar alignment and last panel (thanks Zedna)
+2008-09-05 - Fixed: stupid bug when keys not worked properly in the main icon list (thanks Zedna)
+2008-09-04 - Changed: order of menus in code generator output to fix "main menu" issue (thanks Zedna)
+
+Beta 1.7.0.8 (2008-10-03)
+2008-09-03 - Fixed: various small fixes and cleanups in new code
+2008-09-02 - Added: Button now support coloring
+2008-09-02 - Changed: rewritten Button control to support new icons code
+2008-09-01 - Added: Picture editor may be invoked by doubleclick too
+2008-09-01 - Changed: method of working with custom picture paths (changed method of loading break this anyway)
+2008-09-01 - Changed: speedup loading of new Icon control, when icon loading from large libraries
+2008-09-30 - Fixed: Form Captor example generated non-closed warning tag that cause conversion failure
+2008-09-30 - Added: poFixed for form, where actual position not depend on form position (idea by Valik)
+2008-09-29 - Changed: rewritten Picture Editor to support new Icon and other controls
+2008-09-27 - Changed: rewritten Icon control (now much closer to an actual Autoit control & hi-color icons support)
+2008-09-24 - Added: help handlers and ID's to all property editors
+
+Beta 1.7.0.7 (2008-09-24)
+2008-09-24 - Changed: finished icon support rewriting, now retreiving of hi-color icons supported
+2008-09-05 - Fixed: using wrong row when changing icon in list after deleting one of icon (thanks Zedna)
+2008-09-05 - Fixed: AV when deleting (attached) context menu (long time bug)
+2008-09-05 - Fixed: AV when deleting attached toolbar or imagelist (thanks Zedna)
+2008-09-05 - Fixed: AV when invoke taborder dialog on toolbutton (thanks Zedna)
+2008-09-05 - Fixed: no toolbar icon in taborder dialog (thanks Zedna)
+
+Beta 1.7.0.6 (2008-09-03)
+2008-09-03 - Changed: experimental feature - not keep bitmaps inside form anymore (not supported customized paths yet)
+2008-09-03 - Added: code generator part for toolbar/imagelist
+2008-09-02 - Added: alignment for ListView columns
+2008-09-02 - Fixed: form modified flag not set when editing properties (thanks Zedna)
+2008-09-01 - Added: new imagelist implementation, icon resources
+2008-05-10 - Added: initial toolbar and imagelist implementation
+
+Beta 1.7.0.5 (2008-02-20)
+2008-03-20 - Added: AcceleratorTables support (thanks Jon :)
+2008-03-17 - Changed: new kxf-document icon (thanks damian666)
+2008-03-13 - Fixed: form not show up after import
+2008-03-12 - Added: dialog for quick fixing script being imported
+2008-03-03 - Fixed: incorrect import GUI with variables with scope (thanks joseLB)
+2008-02-11 - Fixed: couple bugs in the FormCaptor.au3 import module (thanks Zedna)
+
+Beta 1.7.0.4 (2008-02-10)
+2008-02-10 - Added: support for new includes system, introduced in latest beta
+2007-12-28 - Fixed: not expanding form path when opening AU3 script (thanks doudou)
+2007-12-20 - Added: option to choose, save form while update or not (previously always saved - assume this as bug)
+
+Beta 1.7.0.3 (2007-12-15)
+2007-12-15 - Added: custom controls page, with TAStatusBar and TAIPAddress
+
+Beta 1.7.0.2 (2007-12-07)
+2007-12-06 - Changed: method of access to control's functions (internal, need testing)
+2007-12-05 - Fixed: bug with initial filling of styles list for masked styles
+2007-12-05 - Fixed: better handling of SS_ETCHEDHORZ and SS_ETCHEDVERT styles
+2007-12-05 - Added: finished import example
+2007-11-21 - Added: customizing colors for output window
+2007-11-21 - Added: bring back output window for import (work with both internal and external imports)
+2007-11-21 - Fixed: added code for setting correct DTM_SETFORMAT value for uncode/ansi versions
+2007-11-20 - Added: color customizing (thanks Valik)
+2007-11-16 - Fixed: unexpected wordwrap in output window (thanks Ghost21)
+2007-10-26 - Added: Label with current notify/event state to Event Editor (thanks JohnBailey)
+2007-10-26 - Changed: External import rewritten, added example
+2007-10-25 - Added: Context menu can be assigned to Dummy control too
+2007-10-22 - Added: Recent files list
+2007-10-15 - Added: External import framework (from Au3 scripts via StdOut)
+2007-10-15 - Changed: bypass "single instance code" under Win9x
+2007-10-09 - Changed: method of handling wrapper component images (internal)
+2007-10-09 - Added: Dummy control
+
+Release 1.7.0.1 (2007-10-08)
+2007-09-24 - Fixed: setting form modified flag for different events (align etc)
+2007-09-24 - Fixed: hiding main form's title, when user have taskbar on top/left (thanks LongBowNZ, martin)
+2007-09-19 - Changed: no more exception messagebox when typing wrong control name
+2007-09-19 - Fixed: exception messages not hide behind forms anymore
+2007-09-19 - Fixed: finding script, when form name in script is relative and form opened via drag'n'drop
+2007-09-19 - Added: expanding in strings standard macro as well (@TAB, @CR, @LF, @CRLF, remain coming)
+2007-09-19 - Fixed: expandng variables for menu items
+2007-09-13 - Fixed: Au3toKoda: parsing controls with leading spaces (thanks JohnBailey)
+
+Release 1.7.0.0 (2007-09-09)
+2007-09-01 - Fixed: tiny fixes with translation
+
+Beta 1.6.1.13 (2007-08-27) RC1
+2007-08-27 - Fixed: some properties for date/time controls
+2007-08-27 - Changed: for 1.7 release project manager is hidden
+2007-08-27 - Fixed: Initial code indent counted incorrectly
+2007-08-27 - Changed: AForm -> Form default name
+2007-08-27 - Added: warning message when styles.xml is missing
+2007-08-27 - Fixed: default resizing for Progress
+2007-08-27 - Changed: default font size for Tab now coherent with current Autoit
+
+Beta 1.6.1.12 (2007-07-31)
+2007-07-31 - Changed: much nicer icon for application (thanks rysiora for icon!)
+2007-07-27 - Added: language dependent help files (lang_eng.xml -> help_eng.chm)
+2007-07-17 - Added: allowed to use array variables for expand function (ex. %array[$index]%)
+2007-07-17 - Fixed: bug when ItemIndex for Combo not reloading
+2007-07-12 - Fixed: bug with creating TabSheets when Tab in Group (really ancient, unnoticied bug...)
+2007-07-08 - Fixed: opening forms from project not search scripts anymore (thanks martin)
+2007-07-08 - Fixed: AVs with ProjMan treeview context menus (context menu handle wrong nodes) (thanks martin)
+
+Beta 1.6.1.11 (2007-07-07)
+2007-07-07 - Changed: updated few icons to be more self-telling
+2007-07-07 - Added: finished basic project manager functionality (no updating yet)
+2007-07-04 - Added: ability to copy selected text from output to clipboard via context menu
+2007-07-04 - Changed: codegenerator output window now modal (dunno why this was else...)
+2007-07-04 - Added: when saving to file Koda trying make path in script relative
+2007-07-04 - Added: ask for save form (if unsaved) when trying to save output to file
+2007-07-04 - Added: when choosing "Save to file" option for code - assign this script to form
+2007-07-03 - Fixed: broken script updating when relative paths used (thanks lokster)
+
+Beta 1.6.1.10 (2007-07-01)
+2007-07-01 - Fixed: AV when inserting menus into Group or TabSheet (thanks martin)
+2007-07-01 - Fixed: height of main form in combination of 120 dpi + themes enabled (thanks Tam0r)
+2007-07-01 - Fixed: AV when closing form, where ContextMenu assigned to one of controls (thanks martin)
+2007-06-24 - Fixed: Division by zero bug in certain situations with Progress control 
+2007-06-24 - Fixed: Resizing property not generating for ALL controls (doh) (thanks Zedna)
+2007-06-24 - Fixed: Bunch of small translation related bugs (thanks Zedna)
+
+Beta 1.6.1.9 (2007-06-09)
+2007-06-08 - Added: Resizing property to remain controls
+2007-06-07 - Added: context menu for toolbar with "Customize" command (calling options)
+2007-06-07 - Fixed: negative values for ListView column width (thanks kanumi)
+2007-05-31 - Fixed: save button state (thanks martin)
+2007-05-31 - Changed: redone many parts of code in picture selector
+2007-05-31 - Added: ability to have custom path for pictures/icons
+2007-05-30 - Added: picture open dialog filters revised, translation added
+2007-05-30 - Fixed: Button icon genearation (thanks pixels75)
+2007-05-30 - Fixed: Icon genearation icon index (now with -)
+
+Beta 1.6.1.8 (2007-05-30)
+2007-05-30 - Added: Undo functionality
+2007-05-24 - Added: initial support for projects (unfinished yet) 
+2007-05-23 - Added: forget ContextMenu for tab
+2007-05-22 - Changed: remove accelerators from Toolbar customizing lists
+2007-05-22 - Added: Koda understand relative paths to forms in the scripts in the #Region directive 
+2007-05-10 - Fixed: BS_LEFTTEXT style replaced with equal BS_RIGHTBUTTON, that referenced in include (thanks Fox2)
+2007-05-10 - Changed: redone component palette on TB2k (in order context help work, internal)
+2007-05-09 - Fixed: chanaged forgotten parts, related to fully qualified names
+2007-05-09 - Changed: removed "ShowHint" property, this is give nothing but messing
+2007-05-09 - Added: extended custom formatting to form too
+2007-05-08 - Added: implemented HTML Help help system (big thanks EulerG for help)
+
+Beta 1.6.1.7 (2007-05-08)
+2007-05-08 - Added: advanced ability for creating new controls with custom formatting
+2007-05-08 - Changed: unified indent setting controls layout
+2007-05-08 - Fixed: small fixes with event/loop mode switching
+2007-05-08 - Added: ability to generate fully qualified names instead "-1" for setting functions
+2007-05-05 - Changed: picture frame when no image loaded, now have inverse background color (thanks martin)
+2007-05-05 - Fixed: picture with uppercase extension don't load in control
+2007-04-27 - Added: for beta stage new exception handler with more detailed error info in some cases
+2007-04-25 - Changed: Koda not allow insert more then one tab control anymore
+
+Beta 1.6.1.6 (2007-04-25)
+2007-04-25 - Changed: "strip prefix" option removed, codegen updated
+2007-04-25 - Fixed: don't allow anymore copy/paste TabSheet
+2007-04-24 - Changed: A-prefix now removed in designer (thanks martin)
+2007-04-18 - Added: TALabel custom painting to compatibility with XP theming (thanks martin)
+
+Beta 1.6.1.5 (2007-04-15)
+2007-04-14 - Added: Internal manifest resource
+2007-04-14 - Changed: InputBox for toolbar name replaced with "inplace" editor
+2007-04-14 - Added: opening multiple forms via Open dialog
+2007-04-14 - Changed: opened TabSheet font property, that can be used for change font for all placed controls
+2007-04-14 - Changed: Tab default font and color look showing correctly in designer
+2007-04-14 - Changed: now Color and Font properties for current control not generating when parent have the same 
+
+Beta 1.6.1.4 (2007-04-14)
+2007-04-13 - Added: Recreated default directory structure if absent
+2007-04-13 - Fixed: AV when pasting with hotkeys
+2007-04-13 - Added: additional checks, now state of paste item depends on actual clipboard data
+2007-04-13 - Changed: part of code, now not need to catch Del shortcut anymore (internal)
+2007-04-13 - Fixed: Again - Del shortcut... doh, at least now I recall why removed it from menu
+2007-04-12 - Added: For testing: Resizing property to few controls
+2007-04-12 - Changed: Event mode checkbox removed from options
+2007-04-12 - Changed: Koda automatically select Event editor look depends on form mode
+
+Beta 1.6.1.3 (2007-04-11)
+2007-04-11 - Fixed: AV when deleting button and some other controls (thanks Zedna)
+2007-04-11 - Changed: logic of "Advanced generate" menu
+
+Beta 1.6.1.2 (2007-04-10)
+2007-04-10 - Fixed: spelling in some menus
+2007-04-10 - Fixed: not applied state to popup toolbar menus
+2007-04-10 - Added: AU3 import
+2007-04-09 - Added: Opening via association now open form in the current program instance
+2007-04-09 - Added: Drag&Drop file(s) from shell
+
+Beta 1.6.1.1 (2007-04-09)
+2007-04-08 - Added: When pasting, check that clipboard format is correct (avoid AV's)
+2007-04-08 - Added: Resize and moving form now update property inspector values
+2007-04-06 - Fixed: Dissappearing design form with Visible=false when calling menu editor 
+2007-04-06 - Fixed: Opt() code now generated too
+2007-04-06 - Added: missed onClick property for menus (old forms will work, but still miss this property)
+2007-04-06 - Added: customized toolbars
+2007-04-05 - Fixed: progress default position
+2007-04-05 - Added: code for setting ListView columns width now generating
+2007-04-05 - Added: ParentForm property to form, updated codegenerator
+2007-04-04 - Added: big toolbar icons creation from existing small set (internal)
+2007-04-04 - Changed: moved toolbars to TB2k
+2006-09-27 - Added: XP Manifest
+2006-09-22 - Fixed: Object Tree sometimes empty when Koda starts
+2006-09-21 - Changed: moved menus to TB2k component, now all menus are strictly consistent
+2006-09-20 - Added: Aligning palette
+2006-09-20 - Changed: all functions centralized with ActionList (internal)
+
+Release 1.6.0.2 (2006-09-19) bugfix
+2006-09-12 - Fixed: Control remain in combo after deleting by Del hotkey (thanks Zedna)
+
+Release 1.6.0.1 (2006-09-11) bugfix
+2006-09-07 - Fixed: Selection on controls (thanks Zedna)
+2006-09-07 - Fixed: AV when closing form while controls selected by Ctrl-A
+2006-09-07 - Fixed: AX Browser now change selection by arrows (but some components can steal focus) (thanks Zedna)
+2006-09-07 - Fixed: "New Page" item no more remain when no form in designer (thanks Zedna)
+2006-09-07 - Fixed: AV when click on Reset buttons when no active form (thanks Zedna)
+2006-09-07 - Fixed: selection in treeview and in desiner form not syncronized in certain situation (thanks Zedna)
+2006-09-07 - Fixed: shaded context menu items when context menu called on form (thanks Zedna)
+2006-09-07 - Fixed: (hopefuly) bug with AV when closing form, created from template (thanks Zedna)
+2006-09-07 - Fixed: nasty bug when form not saving in certain conditions (thanks Zedna)
+2006-09-07 - Fixed: Max value for updown not saved when set to 100 (thanks BaKaMu)
+
+Release 1.6.0.0 (2006-09-07)
+2006-09-06 - Added: Chinese(Simplified) translation (thanks bianbian)
+2006-09-04 - Added: Norwegian translation (thanks Helge)
+2006-08-31 - Fixed: fixes in collection editor (focus, index out of bound etc) + better refresh (thanks Zedna)
+2006-08-31 - Fixed: incorrect SetOnEvent functions for GUI (thanks Zedna)
+2006-08-31 - Fixed: Max property for UpDown not saved (thanks BaKaMu)
+
+Beta 1.5.1.19 (2006-08-30) RC
+2006-08-30 - Fixed: Del shortcut override property inspector Delete functionslity. Main menu shortcut for Delete removed, but Del still work on designing form.
+2006-08-30 - Fixed: temporary fix for collection editor issue (thanks Zedna)
+2006-08-30 - Changed: now it's possible set larger Combo height (Win2k issue, thanks Zedna)
+2006-08-28 - Fixed: events for form (thanks gring0)
+
+Beta 1.5.1.18 (2006-08-25)
+2006-08-25 - Added: Polish, Brazilian Portuguese and Spanish translations (thanks monter.FM, gring0 and GioVit)
+2006-08-25 - Added: GUI_WS_EX_PARENTDRAG exstyle for label and pic (thanks BaKaMu)
+2006-08-25 - Fixed: 2 absent exstyles for form (thanks gring0)
+2006-08-24 - Fixed: wrong default exstyle value for TreeView control (thanks eltorro)
+2006-08-23 - Fixed: some parameters for TrayMenu generated even if it was empty
+2006-08-23 - Added: shortcuts to menu items (thanks Zedna)
+
+Beta 1.5.1.17 (2006-08-23)
+2006-08-23 - Added: German and French updated translations (thanks Holger and Groumphy)
+2006-08-23 - Fixed: silly bug with default boolean options (thanks parrotta and Zedna)
+2006-08-22 - Fixed: virtual name of control in the TabOrder editor instead emptyness (thanks Zedna)
+2006-08-22 - Fixed: bug with design form hidden after applying TabOrder editor (thanks Zedna)
+2006-08-22 - Fixed: small fixes with translations (thanks Zedna)
+
+Beta 1.5.1.16 (2006-08-21)
+2006-08-21 - Fixed: workaround for Input/Updown pair with empty name (thanks Zedna)
+2006-08-20 - Fixed: position property for progress and slider (thanks Zedna)
+2006-08-20 - Fixed: empty picture size was 0x0 on the Win9x (thanks Zedna)
+2006-08-20 - Fixed: problem with bad controls refreshing (partially)
+2006-08-20 - Fixed: brocken combo updating when pasting control on the container control
+2006-08-20 - Fixed: combo not updating when pasting control on the treeview
+2006-08-20 - Fixed: enabled "Enabled" :) property for form (thanks Zedna)
+2006-08-20 - Fixed: now GUISetState correctly placed after menus code (thanks Zedna)
+2006-08-20 - Changed: now form code bounds are Scite aware. Sorry, this change is incompatible with code, generated in previous betas.
+2006-08-20 - Fixed: bug with missed main form icon info, also fixed AV when clearing this icon
+2006-08-20 - Fixed: added missed expand vars feature to hints (thanks Couby)
+
+Beta 1.5.1.15 (2006-08-18)
+2006-08-18 - Changed: history.txt consistency, now whole file have Added/Fixed/Changed stucture
+2006-08-18 - Fixed: non-visual components (menu items etc) no more visible in objects combo
+2006-08-18 - Changed: correct combo and properties grid handling when working with menus
+2006-08-18 - Changed: safer work with menus - only property inspector is active when Menu Builder opened
+2006-08-17 - Fixed: variables in loop mode for controls with empty name (thanks SlimShady)
+2006-08-17 - Fixed: weird situations when closing form (thanks Zedna)
+2006-08-16 - Added: different color for events in property inspector
+2006-08-16 - Removed: statusbar from form list, I think this is useless now, because active form is always selected
+2006-08-16 - Fixed: property inspector combo always reset to form while editing properties
+2006-08-16 - Fixed: tree view not react to component name changes until changing selection
+2006-08-16 - Changed: in script choosing form now showing form, being open
+
+Beta 1.5.1.14 (2006-08-16)
+2006-08-16 - Fixed: nasty bug with Templates Gallery that float again (thanks JackB) 
+2006-08-15 - Fixed: options always switch to languages page when apply (thanks Zedna) 
+2006-08-15 - Fixed: version retreival code - again :) Now should work via proxy if proxy set in IE
+2006-08-15 - Added: append ".kxf" extension to name, if it have not one (thanks big_daddy).
+
+Beta 1.5.1.13 (2006-08-14)
+2006-08-14 - Added: option to select: copy code, save it or (in Scite mode) insert into Scite 
+2006-08-14 - Fixed: options apply button handling (thanks Zedna) 
+2006-08-14 - Fixed: version retreiving (hopefully) 
+
+Beta 1.5.1.12 (2006-08-11)
+2006-08-11 - Fixed: lots of small cosmetic fixes (thanks Zedna)
+2006-08-11 - Fixed: rewritten version info retreive, now also support release type (thanks Zedna)
+2006-08-11 - Fixed: all forms sizing at 120 dpi (thanks JackB)
+2006-08-10 - Fixed: rare bug when UpDown not attached again when unattached before
+
+Beta 1.5.1.11 (2006-08-10)
+2006-08-09 - Changed: all non-applicable main and context menu items are shaded in depends of situation
+2006-08-09 - Added: window for choose script (that reference opening form) for working
+2006-08-09 - Added: missing support for GUICtrlSetLimit for few controls
+2006-08-09 - Added: saving positions and sizes of designer's forms and their visibility
+2006-08-09 - Changed: Koda in "Scite Mode" now will close immediately, bypassing all confirm boxes
+2006-08-09 - Fixed: copying code that contain national symbols
+2006-08-08 - Fixed: removed forgotten code in codegen for HaveVariable label property (thanks BaKaMu)
+2006-08-08 - Fixed: changed some code -> less flickering when activating forms
+2006-08-08 - Fixed: form in designer loose "active" status when clicking on FormList (thanks Zedna)
+2006-08-07 - Changed: remain 16-color icons replaced with their high-color analogs.
+2006-08-07 - Fixed: wrong non-transparent main program icon - finally :)
+
+Beta 1.5.1.10 (2006-08-07)
+2006-08-07 - Changed: nicer Object Combo selector
+2006-08-07 - Fixed: bunch of small fixes for visual consistency
+2006-08-07 - Changed: TabOrder editor opens on correct parent level when any control selected
+2006-08-07 - Added: additional errorchecks for situations as below
+2006-08-07 - Fixed: error when opening TabOrder editor on inactive form (thanks Zedna)
+2006-08-05 - Fixed: default event name was empty
+2006-08-05 - Added: remain events to all controls
+
+Beta 1.5.1.9 (2006-08-05)
+2006-08-05 - Changed: code formatting options moved to own page
+2006-08-05 - Changed: removed unneeded resourses - icons, parts of code etc (filesize reduced)
+2006-08-05 - Changed: many icons replaced with highcolor versions
+2006-08-05 - Changed: now most dialogs are sizeable and can be closed by ESC
+2006-08-05 - Added: more informative tooltips for formlist, now it also show script path
+2006-08-04 - Added: functions for managing multiple forms in script
+2006-08-04 - Fixed: small fix with translator, now some unneeded strings will not save in translation file
+2006-08-04 - Added: check new version menuitem in Help menu
+2006-08-02 - Changed: removed Color property for Combo control - this is not supported
+2006-08-02 - Fixed: missed color in code for Progress (thanks eltorro). Color generation function was rewritten as well for better handling default colors
+
+Beta 1.5.1.8 (2006-07-29)
+2006-07-29 - Fixed: Long time undetectable weird bug with error while opening Gallery Dialog. 
+2006-07-29 - Changed: Many changes in loading routines, now Koda is ready to adding import functions
+2006-07-28 - Changed: To speedup form loading, old format checks and conversions are apply only if first opening attempt was unsuccessful. Error will raised if Koda will be unable automatically repair form.
+2006-07-28 - Changed: Edit lines now generates with StringFormat and \r\n instead lots of @CRLF concats.
+2006-07-28 - Changed: HaveVariable property (for Label) is deprecated, please use empty names instead.
+2006-07-28 - Changed: Codegen now accept empty control names to indicate that variable should not be generated
+2006-07-26 - Changed: Credits. Absolutely useless change, just for fun :)
+2006-07-26 - Added: Link to homepage in About window
+2006-07-25 - Added: TreeView allow multiselect and support Copy/Cut/Paste/Delete operations
+2006-07-24 - Added: Objects TreeView panel
+
+Beta 1.5.1.7 (2006-07-23)
+2006-07-23 - Added: manual draft included
+2006-07-23 - Changed: some forms renamed for consistency, so old translation files will not apply to them - I'm warn :)
+2006-07-23 - Fixed: now unneded messages will be removed as well when creating language template
+2006-07-23 - Added: version automatically changed to current in language template when created. 
+2006-07-23 - Changed: finally enabled new form routines. Be careful - you can't open form saved with it in older Koda versions! Older forms should open without problems.
+2006-07-22 - Changed: options file format changed a bit, should be handled with new init method
+2006-07-22 - Changed: options initialization method, hopefuly will not need to delete fd.xml anymore.
+2006-07-22 - Fixed: weird bug, when for ListView/TreeView items not generate, when LV/TV was on inactive Tab page.
+2006-07-10 - Fixed: incorrect double quotes in combo and treeview item (thanks Rex).
+2006-07-08 - Changed: "header and footer" config page changed  to "templates".
+2006-07-08 - Changed: generating now templates based.
+2006-06-22 - Fixed: avi filename generates incorrectly (double quotes).
+2006-05-31 - Fixed: last control on inactive tab page become hidden.
+
+Beta 1.5.1.6 (2006-05-12)
+2006-05-12 - Changed: Picture Editor to work with files, containing multiple icons (executables, dll's etc).
+2006-05-10 - Fixed: AV's when trying to operate with the absent form.
+
+Beta 1.5.1.5 (2006-05-05)
+2006-05-05 - Added: "Advanced" generate mode
+2006-05-05 - Changed: default footer to empty, because loop/event code generates by default
+2006-05-05 - Fixed: when deleting menus, control's associate is still remain
+2006-05-03 - Added: extended expand variables option for codegen: use %variable% anywhere in text properties to get it expanded
+2006-05-02 - Added: position of form now can be set (designed or desktop center relative)
+2006-05-01 - Changed: correctly generating form size with aware of system metrics
+2006-05-01 - Fixed: bugs with generating code, introduced when Menu was added
+2006-04-30 - Added: better handling of main form resize/move events, inspector and formlist forms snap to main form
+2006-04-30 - Changed: rewritten Button control for some reason (internal, no compatibility issues with this change)
+2006-04-30 - Fixed: bug with topmost main form
+2006-04-29 - Changed: TAProgress control to visually reflect background color change
+2006-04-29 - Changed: rewritten Pic/Icon controls for some reason (internal, no compatibility issues with this change)
+2006-04-29 - Changed: base class for invisible components wrapper to avoid counting them with TabOrder (internal)
+
+Beta 1.5.1.4 (ver. was not changed) (2006-04-29)
+2006-04-29 - Added: TabOrder visual designer
+2006-04-28 - Fixed: partially fixed bug with builder freezing when dropping item on it's own submenu. This action should be disallowed, but it sometimes become allowed for the last item...
+2006-04-28 - Fixed: bug with "Invalid typecast" when start menu creating
+2006-04-28 - Changed: after opening menu builder Ins is working at once, no need to click form
+
+Beta 1.5.1.4 2006-04-27
+2006-04-27 - Added: tray menu support
+2006-04-26 - Added: finished support for menus (lots small fixes etc)
+2006-04-26 - Changed: decided not allow copy/cut menus - too many problems caused...
+2006-04-26 - Added: codegen now work with Menus.
+2006-04-26 - Fixed: AV when trying to paste improper clipboard data (not controls copied from GUI).
+2006-04-26 - Fixed: Tab in Group problem: in this case Group have WS_EX_TRANSPARENT style forced.
+2006-04-24 - Changed: form save/load routines changed to use general XML parcer (internal, for testing only atm)
+2006-04-20 - Added: big addition - Main Menu and Context Menu editor 
+2006-04-19 - Added: doubleclick control in designer invoke Event Editor
+2006-04-19 - Changed: a bit an Event Editor
+2006-04-19 - Internal: Tried couple variants with ability to change code, associated with event. All abandoned. Atm, without feedback from script being edited this is close to impossible.
+2006-04-18 - Added: Format property, that allow set format for Date control (like yyyy-MM-dd)
+2006-04-18 - Fixed: controls pasting point for containers (TAGroup etc)
+2006-04-17 - Added: option to create backup when saving form
+2006-04-17 - Added: option "Open last form at startup" now working
+
+Beta 1.5.1.3 (ver. was not changed) (2006-04-17)
+2006-04-17 - Changed: case for some forms, so translators have to change strings in translations (sorry for that...)
+2006-04-17 - Added: hint with form path for form list
+2006-04-17 - Changed: Form List show different icon when form have associated script
+2006-04-17 - Fixed: reviewed all loading/saving/closing form combinations
+2006-04-16 - Fixed: controls combo updating
+2006-04-16 - Fixed: various bugs when opening forms (case sensitivity, spaces in filenames etc)
+2006-04-16 - Changed: form tracking routines was rewritten (now design form not loose focus, form list is tightly syncronized with forms when switching)
+2006-04-15 - Changed: whole form handling code
+
+Beta 1.5.1.3 (2006-04-11)
+2006-04-11 - Added: "Update" function (for testing)
+2006-04-11 - Added: another options for generating code
+2006-04-10 - Added: OnEvent mode
+2006-04-09 - Changed: a lot of changes in Code generator (internal)
+
+Beta 1.5.1.2 (2006-04-03)
+2006-04-02 - Changed: controls, pasted from context menu now inserts precisely at mouse cursor
+2006-04-01 - Changed: some consistence sanity with all property editors
+2006-04-01 - Fixed: AVI path in prop inspector is now visible
+2006-04-01 - Fixed: refined open/save dialog filters for controls
+2006-04-01 - Fixed: brocken PicturePath for TAbutton
+2006-03-31 - Fixed: various small fixes with localization
+2006-03-31 - Changed: GroupBox custom control rewritten for working with TabOrder (internal change)
+2006-03-31 - Changed: Both IDE and Code Generator now TabOrder aware
+
+Release 1.5.1.0 (2006-02-25)
+2006-02-25 - Fixed: various bugs
+
+Release 1.5.0.0 (2006-02-20)
+2006-02-20 - Added: translateable messages in language files
+2006-02-19 - Fixed: copytoclipboard function in code window
+2006-02-18 - Fixed: prob when opening files from within Scite. Added ClientHeight and ClientWidth to form properties
+2006-02-02 - Fixed: styles flaw (form format changed a bit), old forms will loads without problems and automatically converts to new format
+2006-02-01 - Fixed: some issues with styles, updated styles.xml, fixed config parameters initialization. Added ability to change variables scope in the generated code. Refreshed options dialog look.
+2006-01-31 - Added: finished translation code
+2005-12-11 - Added: implemented translation
+2005-11-23 - Added: logic to prompt user on form modified when removing form or closing koda
+2005-11-21 - Added: command line parameter '/Scite' for integration with Scite
+2005-11-19 - Added: icons and descriptions of forms in the gallery dialog.
+2005-11-18 - Added: new gallery dialog, allow user create own collections of templates.
+2005-11-14 - Added: Obj control implemented.
+2005-11-11 - Added: new "doc" icon, appear when associate Koda's *.kxf extension.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
