@@ -83,6 +83,7 @@ if ask == '1':
         os.mkdir(path+'\\Encrypted')
         for filedir in filelist:
             newpath = path+'\\Encrypted\\'+filedir.split('\\')[-1]+'.enc'
+            print "Encrypting",filedir
             encrypt_file(password,filedir,newpath)
     else:
         print "Error Occured ! "
@@ -95,6 +96,7 @@ elif ask == '2':
         for filedir in filelist:
             newpath = path+'\\Decrypted\\'+filedir.split('\\')[-1]
             outfile = os.path.splitext(newpath)[0]
+            print "Decrypting",filedir
             decrypt_file(password,filedir,outfile)
     else:
         print "Error Occured ! "
