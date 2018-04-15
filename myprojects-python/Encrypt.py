@@ -1,4 +1,4 @@
-import os, random, struct,hashlib
+import os, random, struct,hashlib,getpass,glob
 from Crypto.Cipher import AES
 
 def encrypt_file(password, in_filename, out_filename=None, chunksize=64*1024):
@@ -70,5 +70,31 @@ def decrypt_file(password, in_filename, out_filename=None, chunksize=24*1024):
 
             outfile.truncate(origsize)
 
-#encrypt_file('arpanghosh123456',r'C:\Users\Arpan\Downloads\pycharm-community-2018.1.1.exe')
-#decrypt_file('arpanghosh123456',r'C:\Users\Arpan\Downloads\pycharm-community.exe.enc')
+choice = raw_input("Enter the Correct code [ File : 1 & Folder : 2 ] : ")
+path = raw_input("Enter the full path for it : ")
+ask = raw_input("Enter the Correct code [ Encryption : 1 & Decryption : 2 ] : ")
+password = getpass.getpass()
+
+if ask == '1':
+    if choice == '1':
+        encrypt_file(password,path)
+    elif choice == '2':
+        filelist = glob.glob(path+'\\*.*')
+        os.mkdir(path+'\\Encrypted')
+        for filedir in filelist:
+            newpath = path+'\\Encrypted\\'+filedir.split('\\')[-1]+'.enc'
+            encrypt_file(password,filedir,newpath)
+    else:
+        print "Error Occured ! "
+elif ask == '2':
+    if choice == '1':
+        decrypt_file(password,path)
+    elif choice == '2':
+        filelist = glob.glob(path+'\\*.*')
+        os.mkdir(path+'\\Decrypted')
+        for filedir in filelist:
+            newpath = path+'\\Decrypted\\'+filedir.split('\\')[-1]
+            outfile = os.path.splitext(newpath)[0]
+            decrypt_file(password,filedir,outfile)
+    else:
+        print "Error Occured ! "
