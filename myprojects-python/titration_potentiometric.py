@@ -1,16 +1,7 @@
-
-# coding: utf-8
-
-# In[1]:
-
 import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sp
 from sympy.abc import x
-
-
-
-# In[2]:
 
 acid_C = 0.1
 base_C = 0.1
@@ -21,9 +12,6 @@ a = acid_C*acid_vol
 b = base_C
 c = acid_vol
 z = const
-
-
-# In[6]:
 
 def get_ph(base_vol):
     try:
@@ -78,8 +66,6 @@ def get_diff_emf(d_ph):
     return 0.059*d_ph
 
 
-# In[7]:
-
 base_vol_list = np.linspace(0,50,1000)
 ph_list =  map(get_ph,base_vol_list)
 ph_diff_list_VOL = map(get_diff_ph,base_vol_list)
@@ -88,50 +74,30 @@ emf_list = map(get_emf,ph_list)
 emf_diff_list_VOL = map(get_diff_emf,ph_diff_list_VOL)
 
 
-# In[18]:
-
 plt.plot(base_vol_list,ph_diff_list_VOL)
 plt.grid()
 
-
-# In[19]:
 
 plt.plot(base_vol_list,ph_list)
 plt.grid()
 
 
-# In[20]:
-
 plt.plot(ph_list,emf_list)
 plt.grid()
 
-
-# In[21]:
 
 plt.plot(base_vol_list,emf_list)
 plt.grid()
 
 
-# In[22]:
 
 plt.plot(base_vol_list,emf_diff_list_VOL)
 plt.grid()
 
 
-# In[8]:
 
 plt.plot(base_vol_list,ph_diff_2_list_VOL)
 plt.grid()
-
-
-# In[9]:
-
-plt.plot(base_vol_list,ph_diff_list_VOL)
-plt.plot(base_vol_list,emf_diff_list_VOL)
-plt.grid()
-
-
-# In[ ]:
 
 
 
