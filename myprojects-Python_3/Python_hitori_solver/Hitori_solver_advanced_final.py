@@ -371,7 +371,6 @@ def take_input():
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #function for printing result
 def print_solution():
-   outfile = open('D:\hitori_solution.txt','a')
    solution_string = '\n'#result string
    print("\nSolution : \n")
    for sub_list in mark_array:
