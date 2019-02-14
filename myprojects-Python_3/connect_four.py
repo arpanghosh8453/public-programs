@@ -179,7 +179,7 @@ def get_fall_point(array, column):
 
 # adds the given character ID in the topmost vacant point of the given column
 def add(array, char, column):
-    if column not in range(1,column_count+1):
+    if column not in range(0,column_count):
         raise IndexError("Given column does not exists !")
     row, column = get_fall_point(array, column)  # gets topmost vacant row value of given column
     if row == -1:  # raise error if the column has no vacancy on its top (Complete filled condition)
@@ -394,4 +394,3 @@ else:
 print("\nSUMMARY : ")
 print("\nTime taken : ", datetime.datetime.now()-start_time)  # printing total time passed
 print('\nWinner is :'+" '"+char+"'")  # printing winner of game
-
