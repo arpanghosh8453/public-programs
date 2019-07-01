@@ -26,8 +26,8 @@ def get_left_diagonal(array, point):
                 value = array[row, col]
                 if value == '.' and is_filled_below(array, (row, col)) is True:  # Replacing '.' with '?' if below point is filled
                     value = '?'
-                left_diagonal.append(value)  # adding values in list
-        except:  # suspend error raising for invalid points
+                left_diagonal.append(value)  
+        except IndexError:  # suspend error raising for invalid points
             pass
     return left_diagonal
 
@@ -43,8 +43,8 @@ def get_right_diagonal(array, point):
                 value = array[row, col]
                 if value == '.' and is_filled_below(array, (row, col)) is True:  # Replacing '.' with '?' if below point is filled
                     value = '?'
-                right_diagonal.append(value)  # adding values in list
-        except:  # suspend error raising for invalid points
+                right_diagonal.append(value) 
+        except IndexError:  # suspend error raising for invalid points
             pass
     return right_diagonal
 
@@ -60,8 +60,8 @@ def get_upper_lower(array, point):
                 value = array[row, col]
                 if value == '.' and is_filled_below(array, (row, col)) is True:  # Replacing '.' with '?' if below point is filled
                     value = '?'
-                upper_lower.append(value)  # adding values in list
-        except:  # suspend error raising for invalid points
+                upper_lower.append(value)
+        except IndexError:  # suspend error raising for invalid points
             pass
     return upper_lower
 
@@ -77,8 +77,8 @@ def get_left_right(array, point):
                 value = array[row, col]
                 if value == '.' and is_filled_below(array, (row, col)) is True:  # Replacing '.' with '?' if below point is filled
                     value = '?'
-                left_right.append(value)  # adding values in list
-        except:  # suspend error raising for invalid points
+                left_right.append(value)
+        except IndexError:  # suspend error raising for invalid points
             pass
     return left_right
 
@@ -135,7 +135,7 @@ def get_point_priority(array, point, char):
          ('x', 'x', 'x'): 5000
         }
     else:
-        # if the point under consideration is assumed to have Player Id '0'
+        # if the point under consideration is assumed to have Player Id 'x'
         priority_dict = {
          ('.', '.', '.'): 0, 
          ('.', '.', '0'): 2, 
@@ -394,3 +394,5 @@ else:
 print("\nSUMMARY : ")
 print("\nTime taken : ", datetime.datetime.now()-start_time)  # printing total time passed
 print('\nWinner is :'+" '"+char+"'")  # printing winner of game
+
+nothing = input("\nEnter to exit : ")
