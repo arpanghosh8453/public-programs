@@ -22,6 +22,10 @@ if row_foot == '':
 skip_r = int(row_foot.split()[0])
 skip_f = int(row_foot.split()[1])
 data = pandas.read_excel(file_path,skiprows=skip_r,skipfooter=skip_f)
+try:
+    data['Debit'] = data['        Debit']
+except KeyError as e:
+    print(e)
 data['Credit'] = data['Credit'].apply(lambda x: 0 if x == ' ' else x)
 data['Debit'] = data['Debit'].apply(lambda x: 0 if x == ' ' else x)
 data.sort_values("Value Date",ascending = True, inplace = True) 
@@ -40,10 +44,7 @@ data['year_month'] = data['Value Date'].dt.to_period("M")
 data['year'] = data['Value Date'].dt.to_period("Y")
 data['week'] = data['Value Date'].dt.year.apply(str)+'_'+data['Value Date'].dt.week.apply(str)
 #data['year_month_1'] = data['Value Date'].dt.month_name(locale = 'English') 
-try:
-    data['Debit'] = data['        Debit']
-except KeyError as e:
-    print(e)
+
 
 
 # In[87]:
