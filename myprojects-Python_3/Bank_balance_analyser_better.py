@@ -97,7 +97,8 @@ if choice == 'W':
     summary['key_week'] = summary['key_week'].apply(lambda x : int(x.split('_')[1]))
     summary.key_week = summary.key_week.astype(int)
     summary = summary.sort_values(['key_year','key_week'])
-    summary.drop(columns=['key_week', 'key_year'])
+    del summary['key_week']
+    del summary['key_year']
 else:
     summary = summary.sort_values('key',ascending = False)
 
