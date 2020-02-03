@@ -115,9 +115,9 @@ summary_1['key_'] = summary['key_']
 summary_1['positive'] = summary_1['saving'] > 0
 
 if choice != 'W':
-    ax = summary.plot(kind = 'bar',figsize=(20,10),x = 'key',grid = True,title = 'Bank data Analyser by Arpan Ghosh',logy = True)
+    ax = summary.plot(kind = 'bar',figsize=(20,10),x = 'key',grid = True,title = 'Bank data Analyser by Arpan Ghosh',logy = False)
 else:
-    ax = summary.plot(kind = 'bar',figsize=(20,10),grid = True,title = 'Bank data Analyser by Arpan Ghosh',logy = True)
+    ax = summary.plot(kind = 'bar',figsize=(20,10),grid = True,title = 'Bank data Analyser by Arpan Ghosh',logy = False)
 ax.set_xticklabels(summary['key_'])
 if choice == 'W':
     ax.set_xlabel("Year_Week-number")
@@ -132,7 +132,7 @@ elif choice == 'D':
     ax.set_xlabel("Date")
     what = 'day'
 
-ax.set_ylabel("Amount in Euro in LOG scale")
+ax.set_ylabel("Amount in INR")
 #ax.set_ylim(0, 3000)
 Max_C = data[data.Credit == data.Credit.max()]
 Max_D = data[data.Debit == data.Debit.max()]
@@ -180,6 +180,6 @@ elif choice == 'Y':
 elif choice == 'D':
     ax_1.set_xlabel("Date")
     what = 'day'
-ax_1.set_ylabel("Amount in Euro in LOG scale")
+ax_1.set_ylabel("Amount in INR")
 figure_1 = ax_1.get_figure()
 figure_1.savefig(os.path.abspath(out_path_pdf_1))
