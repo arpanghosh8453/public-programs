@@ -140,7 +140,8 @@ class Ui_window(object):
         self.i2 = self.comboBox_2.currentText()
         try:
             inp = float(self.textEdit.toPlainText())
-        except:
+        except ValueError as E:
+            print(E)
             self.textEdit_2.setText("Invalid Input !")
             return 0
         if self.i1 == 'Celsius':
