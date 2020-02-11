@@ -236,3 +236,20 @@ class Login(QtWidgets.QDialog):
         msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         #msg.buttonClicked.connect(msgbtn)
         retval = msg.exec_()
+
+#---------------------------TO USE, ADD THE FOLLOWING SYNTAX CODE PROPERLY IN YOUR FORM CODE-----------------------------------
+'''
+if __name__ == '__main__':
+    #---------------------for login form-----------------------------
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    login = Login()
+
+    if login.exec_() == QtWidgets.QDialog.Accepted:
+        #--------Main Dialog opens-----------------------
+        Dialog = QtWidgets.QDialog()
+        ui = Ui_Dialog()
+        ui.setupUi(Dialog)
+        Dialog.show()
+        sys.exit(app.exec_())
+'''
