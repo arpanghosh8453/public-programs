@@ -9,7 +9,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
-
+#-----------------------------------------------------start of login form-----------------------------------------------------------
 import sys,os,hashlib
 global ACCESS_LEVEL
 ACCESS_LEVEL = 'NONE'
@@ -239,7 +239,7 @@ class Login(QtWidgets.QDialog):
         #msg.buttonClicked.connect(msgbtn)
         retval = msg.exec_()
 
-
+#----------------------------------------------------------------End of login form------------------------------------------------------------------------
 
 class Ui_Dialog(object):
     i1 = 'Celsius'
@@ -411,12 +411,13 @@ class Ui_Dialog(object):
         return 0
 
 if __name__ == '__main__':
-
+    #---------------------for login form-----------------------------
     import sys
     app = QtWidgets.QApplication(sys.argv)
     login = Login()
 
     if login.exec_() == QtWidgets.QDialog.Accepted:
+        #--------Main Dialog opens-----------------------
         Dialog = QtWidgets.QDialog()
         ui = Ui_Dialog()
         ui.setupUi(Dialog)
