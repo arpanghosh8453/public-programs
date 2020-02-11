@@ -1,4 +1,3 @@
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 import sys,os,hashlib
@@ -17,7 +16,7 @@ class Login(QtWidgets.QDialog):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.line = QtWidgets.QFrame(self)
-        self.line.setGeometry(QtCore.QRect(570, 10, 20, 641))
+        self.line.setGeometry(QtCore.QRect(570, 40, 20, 611))
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
@@ -146,7 +145,14 @@ class Login(QtWidgets.QDialog):
         self.checkBox_2.setFont(font)
         self.checkBox_2.setObjectName("checkBox_2")
         self.checkBox_2.stateChanged.connect(self.toogle_2)
+        self.label_7 = QtWidgets.QLabel(self)
+        self.label_7.setGeometry(QtCore.QRect(510, 0, 181, 41))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.label_7.setFont(font)
+        self.label_7.setObjectName("label_7")
 
+        
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -164,6 +170,7 @@ class Login(QtWidgets.QDialog):
         self.label_6.setText(_translate("LOGIN", "Admin Password"))
         self.pushButton_3.setText(_translate("LOGIN", "Register"))
         self.checkBox_2.setText(_translate("LOGIN", "  Show Characters"))
+        self.label_7.setText(_translate("LOGIN", "© Arpan Ghosh"))
 
 
 
@@ -229,21 +236,3 @@ class Login(QtWidgets.QDialog):
         msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         #msg.buttonClicked.connect(msgbtn)
         retval = msg.exec_()
-
-#-----------------------USE THEFOLLOWING SYNTAX FOR INCORPORATION IN OTHER GUI CODE----------------------------
-
-'''
-if __name__ == '__main__':
-    #---------------------for login form-----------------------------
-    import sys,gui_login
-    app = QtWidgets.QApplication(sys.argv)
-    login = gui_login.Login()
-
-    if login.exec_() == QtWidgets.QDialog.Accepted:
-        #--------Main Dialog opens-----------------------
-        Dialog = QtWidgets.QDialog()
-        ui = Ui_Dialog()
-        ui.setupUi(Dialog)
-        Dialog.show()
-        sys.exit(app.exec_())
-'''
