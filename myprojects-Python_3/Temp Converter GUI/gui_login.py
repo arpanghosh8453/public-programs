@@ -131,7 +131,7 @@ class Login(QtWidgets.QDialog):
         self.lineEdit_5.setFont(font)
         self.lineEdit_5.setObjectName("lineEdit_5")
         self.pushButton_3 = QtWidgets.QPushButton(self)
-        self.pushButton_3.setGeometry(QtCore.QRect(750, 540, 221, 61))
+        self.pushButton_3.setGeometry(QtCore.QRect(620, 540, 221, 71))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.pushButton_3.setFont(font)
@@ -153,6 +153,15 @@ class Login(QtWidgets.QDialog):
         font.setPointSize(11)
         self.label_7.setFont(font)
         self.label_7.setObjectName("label_7")
+        self.checkBox_3 = QtWidgets.QCheckBox(self)
+        self.checkBox_3.setGeometry(QtCore.QRect(890, 550, 181, 41))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI Semibold")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.checkBox_3.setFont(font)
+        self.checkBox_3.setObjectName("checkBox_3")
 
         
         self.retranslateUi()
@@ -170,9 +179,14 @@ class Login(QtWidgets.QDialog):
         self.label_4.setText(_translate("LOGIN", "New Username"))
         self.label_5.setText(_translate("LOGIN", "New Password"))
         self.label_6.setText(_translate("LOGIN", "Admin Password"))
-        self.pushButton_3.setText(_translate("LOGIN", "Register"))
+        if os.path.exists(self.file_store_location+"\\login_data.txt"):
+            self.pushButton_3.setText(_translate("LOGIN", "De-Register"))
+        else:
+            self.pushButton_3.setText(_translate("LOGIN", "Register"))
         self.checkBox_2.setText(_translate("LOGIN", "  Show Characters"))
         self.label_7.setText(_translate("LOGIN", "© Arpan Ghosh"))
+        self.checkBox_3.setText(_translate("LOGIN", " Premium Member"))
+
 
 
 
@@ -211,21 +225,37 @@ class Login(QtWidgets.QDialog):
             self.showdialog(QMessageBox.Information,"User Access Granted Successfully !","Username and password matched : You are an registered User. Welcome ! .")
             self.access_level = 'USER'
             self.accept()
+        elif hashlib.sha256(self.lineEdit.text().encode('utf-8')).hexdigest() == match[0] and hashlib.sha256((self.lineEdit_2.text()+'premium').encode('utf-8')).hexdigest() == match[1]:
+            self.showdialog(QMessageBox.Information,"Premium User Access Granted Successfully !","Username and password matched : You are an registered Premium User. Welcome ! .")
+            self.access_level = 'PREMIUM'
+            self.accept()
         else:
             self.showdialog(QMessageBox.Warning,"User Access Not Granted !","Username or password not matched with registred user : You are not an user. Please try other ways .")
             self.access_level = 'NONE'
 
     def register(self):
         if os.path.exists(self.file_store_location+"\\login_data.txt"):
-            self.showdialog(QMessageBox.Warning,"User Already registered !","To Re-register , Contact Admin Arpan Ghosh")
+            if self.lineEdit_5.text() == 'arpanghosh8453':
+                os.remove(self.file_store_location+"\\login_data.txt")
+                self.showdialog(QMessageBox.Information,"User Successfully De-Registered  !","To Re-register , Contact Admin Arpan Ghosh")
+                self.pushButton_3.setText(QtCore.QCoreApplication.translate("LOGIN", "Register"))
+            else:
+                self.showdialog(QMessageBox.Warning,"Unable to De-Register !","Wrong Admin Password : To De-register , Contact Admin Arpan Ghosh")
         else:
             if self.lineEdit_5.text() == 'arpanghosh8453':
                 username = self.lineEdit_4.text()
-                password = self.lineEdit_3.text()
+                if self.checkBox_3.isChecked():
+                    password = self.lineEdit_3.text()+'premium'
+                else:
+                    password = self.lineEdit_3.text()
                 f = open(self.file_store_location+"\\login_data.txt",'w')
                 f.write(hashlib.sha256(username.encode('utf-8')).hexdigest()+'\n'+hashlib.sha256(password.encode('utf-8')).hexdigest())
                 f.close()
-                self.showdialog(QMessageBox.Information,"User Successfully Registered!","Username and password Saved  : You are an registered User now . Please proceed to Login .")
+                if self.checkBox_3.isChecked():
+                    self.showdialog(QMessageBox.Information,"Premium User Successfully Registered!","Username and password Saved  : You are an registered Premium User now . Please proceed to Login .")
+                else:
+                    self.showdialog(QMessageBox.Information,"User Successfully Registered!","Username and password Saved  : You are an registered User now . Please proceed to Login .")
+                self.pushButton_3.setText(QtCore.QCoreApplication.translate("LOGIN", "De-Register"))
             else:
                 self.showdialog(QMessageBox.Warning,"Unable To Register !","Admin password is not correct : You are not registered. To register, Contact Admin Arpan Ghosh")
 
@@ -255,7 +285,7 @@ if __name__ == '__main__':
         Dialog = QtWidgets.QDialog()
         ui = Ui_Dialog()
         ui.setupUi(Dialog)
-        if login.access_level != 'ADMIN': # access level check
+        if login.access_level == 'USER': # access level check
             ui.checkBox.setEnabled(False)
         Dialog.show()
         sys.exit(app.exec_())
