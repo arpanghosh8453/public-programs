@@ -259,10 +259,10 @@
   <widget class="QPushButton" name="pushButton_3">
    <property name="geometry">
     <rect>
-     <x>750</x>
+     <x>620</x>
      <y>540</y>
      <width>221</width>
-     <height>61</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="font">
@@ -311,6 +311,27 @@
    </property>
    <property name="text">
     <string>© Arpan Ghosh</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_3">
+   <property name="geometry">
+    <rect>
+     <x>890</x>
+     <y>550</y>
+     <width>181</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI Semibold</family>
+     <pointsize>11</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string> Premium Member</string>
    </property>
   </widget>
  </widget>
