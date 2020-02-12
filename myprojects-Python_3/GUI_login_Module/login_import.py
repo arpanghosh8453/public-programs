@@ -111,7 +111,10 @@ class Ui_Dialog(object):
         self.pushButton_2.setStyleSheet("background-color:rgb(230, 118, 81)")
         self.pushButton_2.clicked.connect(self.reset)
         self.label_3 = QtWidgets.QLabel(window)
-        self.label_3.setGeometry(QtCore.QRect(900, 560, 101, 16))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_3.setFont(font)
+        self.label_3.setGeometry(QtCore.QRect(450, 0, 141, 41))
         self.label_3.setObjectName("label_3")
 
 
@@ -179,6 +182,7 @@ class Ui_Dialog(object):
             self.timer.stop()
         return 0
 
+        
 if __name__ == '__main__':
     #---------------------for login form-----------------------------
     import sys
@@ -190,7 +194,7 @@ if __name__ == '__main__':
         Dialog = QtWidgets.QDialog()
         ui = Ui_Dialog()
         ui.setupUi(Dialog)
-        if login.access_level != 'ADMIN':
+        if login.access_level == 'USER':
             ui.checkBox.setEnabled(False)
         Dialog.show()
         sys.exit(app.exec_())
