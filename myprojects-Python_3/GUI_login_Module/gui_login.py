@@ -204,7 +204,7 @@ class Login(QtWidgets.QDialog):
 
 
     def admin_login(self):
-        if self.lineEdit.text() == '@arpanghosh' and self.lineEdit_2.text() == 'arpanghosh8453':
+        if hashlib.sha256(self.lineEdit.text().encode('utf-8')).hexdigest() == '2ba9b64e8812fd0b85d5b71735ade64c57a59e3455e08f4f398086efcf568273' and hashlib.sha256(self.lineEdit_2.text().encode('utf-8')).hexdigest() == 'de6155819d65c2b4e616ee3a3b3ae31a32cbddbed34b0f1907c8090747959ea2':
             self.access_level = 'ADMIN'
             self.showdialog(QMessageBox.Information,"Admin Access Granted Successfully !","Username and password matched : You are an registered admin. Welcome ! .")
             self.accept()
@@ -235,14 +235,20 @@ class Login(QtWidgets.QDialog):
 
     def register(self):
         if os.path.exists(self.file_store_location+"\\login_data.txt"):
-            if self.lineEdit_5.text() == 'arpanghosh8453':
+            if hashlib.sha256(self.lineEdit_5.text().encode('utf-8')).hexdigest() == 'de6155819d65c2b4e616ee3a3b3ae31a32cbddbed34b0f1907c8090747959ea2':
                 os.remove(self.file_store_location+"\\login_data.txt")
                 self.showdialog(QMessageBox.Information,"User Successfully De-Registered  !","To Re-register , Contact Admin Arpan Ghosh")
                 self.pushButton_3.setText(QtCore.QCoreApplication.translate("LOGIN", "Register"))
+                self.lineEdit_5.setText('')
+                self.lineEdit_5.setAlignment(QtCore.Qt.AlignCenter)
+                self.lineEdit_4.setText('')
+                self.lineEdit_4.setAlignment(QtCore.Qt.AlignCenter)
+                self.lineEdit_3.setText('')
+                self.lineEdit_3.setAlignment(QtCore.Qt.AlignCenter)
             else:
                 self.showdialog(QMessageBox.Warning,"Unable to De-Register !","Wrong Admin Password : To De-register , Contact Admin Arpan Ghosh")
         else:
-            if self.lineEdit_5.text() == 'arpanghosh8453':
+            if hashlib.sha256(self.lineEdit_5.text().encode('utf-8')).hexdigest() == 'de6155819d65c2b4e616ee3a3b3ae31a32cbddbed34b0f1907c8090747959ea2':
                 username = self.lineEdit_4.text()
                 password = self.lineEdit_3.text()
                 if username == '' or password == '':
@@ -258,6 +264,12 @@ class Login(QtWidgets.QDialog):
                 else:
                     self.showdialog(QMessageBox.Information,"User Successfully Registered!","Username and password Saved  : You are an registered User now . Please proceed to Login .")
                 self.pushButton_3.setText(QtCore.QCoreApplication.translate("LOGIN", "De-Register"))
+                self.lineEdit_5.setText('')
+                self.lineEdit_5.setAlignment(QtCore.Qt.AlignCenter)
+                self.lineEdit_4.setText('')
+                self.lineEdit_4.setAlignment(QtCore.Qt.AlignCenter)
+                self.lineEdit_3.setText('')
+                self.lineEdit_3.setAlignment(QtCore.Qt.AlignCenter)
             else:
                 self.showdialog(QMessageBox.Warning,"Unable To Register !","Admin password is not correct : You are not registered. To register, Contact Admin Arpan Ghosh")
 
