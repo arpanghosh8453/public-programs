@@ -244,10 +244,12 @@ class Login(QtWidgets.QDialog):
         else:
             if self.lineEdit_5.text() == 'arpanghosh8453':
                 username = self.lineEdit_4.text()
+                password = self.lineEdit_3.text()
+                if username == '' or password == '':
+                    self.showdialog(QMessageBox.Warning,"Unable To Register !","Username and Password must be provided : You are not registered. To register, Contact Admin Arpan Ghosh")
+                    return 0
                 if self.checkBox_3.isChecked():
-                    password = self.lineEdit_3.text()+'premium'
-                else:
-                    password = self.lineEdit_3.text()
+                    password = password+'premium'
                 f = open(self.file_store_location+"\\login_data.txt",'w')
                 f.write(hashlib.sha256(username.encode('utf-8')).hexdigest()+'\n'+hashlib.sha256(password.encode('utf-8')).hexdigest())
                 f.close()
