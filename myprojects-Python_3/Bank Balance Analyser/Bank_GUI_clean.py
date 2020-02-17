@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import pandas
 from PyQt5.QtCore import QAbstractTableModel, Qt
 
-GERMAN_VERSION = False
+GERMAN_VERSION = True
+
 class PandasModel(QtCore.QAbstractTableModel): 
     def __init__(self, df = pandas.DataFrame(), parent=None): 
         QtCore.QAbstractTableModel.__init__(self, parent=parent)
@@ -87,7 +88,7 @@ class Show_data(QtWidgets.QWidget):
         fileName = QtWidgets.QFileDialog.getSaveFileName(None, "Save Data to file", ".", "CSV file (*.csv)")[0]
         if fileName:
             try:
-                ui.data_.to_csv(fileName,index=False,sep='\t',encoding='utf-8')
+                ui.data_.to_csv(fileName,index=False,sep='\t',encoding="ISO-8859-1")
                 ui.textBrowser.append('File Saved Successfully !\n')
             except:
                 ui.textBrowser.append('File is Already open by another Process or Permission Denied to location : Unable to save !\n')
@@ -430,7 +431,7 @@ class Ui_Dialog(object):
             else:
                 skip_f = 3
 
-            data = pandas.read_csv(file_path,sep = '\t',skiprows=skip_r,skipfooter=skip_f,engine='python',encoding='utf8')
+            data = pandas.read_csv(file_path,sep = '\t',skiprows=skip_r,skipfooter=skip_f,engine='python',encoding="ISO-8859-1")
             #data = pandas.read_excel(file_path,skiprows=skip_r,skipfooter=skip_f)
             try:
                 data['Debit'] = data['        Debit']
@@ -501,7 +502,7 @@ class Ui_Dialog(object):
         skip_r = self.spinBox.value()
         skip_f = self.spinBox_2.value()
         try:
-            data = pandas.read_csv(self.filename[0],sep = '\t',skiprows=skip_r,skipfooter=skip_f,engine='python',encoding='utf8')
+            data = pandas.read_csv(self.filename[0],sep = '\t',skiprows=skip_r,skipfooter=skip_f,engine='python',encoding="ISO-8859-1")
             try:
                 data['Debit'] = data['        Debit']
             except KeyError:
@@ -727,7 +728,7 @@ class Ui_Dialog(object):
         
         try:
             filename_1 = self.filename[0]
-            self.data_ = pandas.read_csv(filename_1,sep=';',engine='python',encoding='utf8',names = ['Txn Date','Value Date','Description','amount','EUR','NONE'],skiprows = self.spinBox.value(),skipfooter = self.spinBox_2.value())
+            self.data_ = pandas.read_csv(filename_1,sep=';',engine='python',encoding="ISO-8859-1",names = ['Txn Date','Value Date','Description','amount','EUR','NONE'],skiprows = self.spinBox.value(),skipfooter = self.spinBox_2.value())
             del self.data_['NONE']
             del self.data_['EUR']
             self.data_['Txn Date'] = self.data_['Txn Date'].apply(lambda x : fix_date(x))
@@ -742,7 +743,7 @@ class Ui_Dialog(object):
                 self.textBrowser_2.setText('')
                 self.filename = ['','']
             else:
-                self.data_.to_csv(save_name,encoding='utf-8',index=False,sep='\t')
+                self.data_.to_csv(save_name,encoding="ISO-8859-1",index=False,sep='\t')
                 self.textBrowser.append('File written as "'+save_name+' And Loading from that file\n')
                 self.filename = [save_name,'']
 
