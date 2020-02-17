@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pandas
 from PyQt5.QtCore import QAbstractTableModel, Qt
 
-GERMAN_VERSION = True
+GERMAN_VERSION = False
 
 class PandasModel(QtCore.QAbstractTableModel): 
     def __init__(self, df = pandas.DataFrame(), parent=None): 
