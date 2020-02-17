@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pandas
 from PyQt5.QtCore import QAbstractTableModel, Qt
 
-GERMAN_VERSION = False
+GERMAN_VERSION = True
 
 class PandasModel(QtCore.QAbstractTableModel): 
     def __init__(self, df = pandas.DataFrame(), parent=None): 
@@ -375,16 +375,25 @@ class Ui_Dialog(object):
         self.convert_Button.setText(_translate("Dialog", "Convert"))
 
     def get_file_name(self):
+        self.clear()
         self.filename = QFileDialog.getOpenFileName(None, 'Open file', expanduser('~'),"Excel files (*.xls , *.csv)")
         self.textBrowser_2.setText(self.filename[0])
         if self.filename[0]:
             self.textBrowser.append("successfully Located File : "+self.filename[0]+'\n')
             self.Default_Button.setEnabled(True)
             if self.other_bank_Checkbox.isChecked():
-                self.auto_convert()
+                f_handle = open(self.filename[0],'r')
+                raw_data = f_handle.read()
+                if raw_data.startswith('Txn Date	Value Date	Description	Credit	Debit') == False:
+                    self.auto_convert()
+                else:
+                    self.textBrowser.append("Converted file Identified !\n")
         if self.filename[0]:
             if self.other_bank_Checkbox.isChecked():
-                self.textBrowser_2.setText(" [CONVERTED] "+self.filename[0])
+                if raw_data.startswith('Txn Date	Value Date	Description	Credit	Debit'):
+                    self.textBrowser_2.setText(self.filename[0])
+                else:
+                    self.textBrowser_2.setText(" [CONVERTED] "+self.filename[0])
             self.find_default()
         else:
             self.textBrowser.append("No File Chosen !\n")
@@ -739,7 +748,7 @@ class Ui_Dialog(object):
             self.textBrowser.append('Attempting to convert file autometically !\n')
             save_name = os.path.split(filename_1)[0]+'\\'+os.path.split(filename_1)[1].split('.')[0]+'_converted'+'.'+os.path.split(filename_1)[1].split('.')[1]
             if os.path.exists(save_name):
-                self.textBrowser.append('\nUnable to save '+save_name+" : file already exists!\n\nAborting Auto conversion , please try convert button to convert and save .\n")
+                self.textBrowser.append('Unable to save '+save_name+" : FILE ALREADY EXISTS !\n\nAborting Auto conversion , please try convert button to convert and save manually then open that file usinf 'open' button.\n")
                 self.textBrowser_2.setText('')
                 self.filename = ['','']
             else:
@@ -748,8 +757,8 @@ class Ui_Dialog(object):
                 self.filename = [save_name,'']
 
         except Exception as e:
-            self.textBrowser.append("Auto-conversion is not supporting ( Already converted or Unknown format ) \n\nPlease try manual conversion button, save and then open it IN CASE OF FURTHUS ERRORS ONLY\n")
-
+            self.textBrowser.append("ERROR : "+str(e)+"\nAuto-conversion is not supporting ( Already converted or Unknown format ) \n\nPlease try manual conversion button, save and then open it IN CASE OF FURTHUS ERRORS ONLY\n")
+            #raise e
         self.convert_Button.setEnabled(True)
 
 if __name__ == "__main__":
