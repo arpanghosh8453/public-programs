@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[207]:
 
+
+get_ipython().run_line_magic('matplotlib', 'inline')
 
 #You need the following modues, if you don't have them, use pip install <module-name>
 import requests
@@ -10,9 +12,10 @@ import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import dates
 
 
-# In[2]:
+# In[3]:
 
 
 # Implicit Grant Flow
@@ -414,6 +417,53 @@ plt.axvline(x = datetime.datetime.strptime(sleep_end_time, '%Y-%m-%dT%H:%M:%S.%f
 plt.title("HR Plot"+"\n\n"+"Above resting HR :"+str(above_resting)+"% & Below resting HR :"+str(below_resting)+"%")
 plt.legend()
 #plt.grid()
+plt.show()
+
+
+# <h2>Sleep timing</h2>
+
+# In[203]:
+
+
+header = {'Authorization': 'Bearer {}'.format(access_token)}
+
+response = requests.get("https://api.fitbit.com/1.2/user/-/sleep/date/"+start_date+"/"+end_date+".json", headers=header).json()
+
+
+# In[214]:
+
+
+# Convert to matplotlib's internal date format.
+x = mdates.datestr2num(df.index.to_series().to_list())
+y = mdates.datestr2num(df.start_time.apply(str).str.slice(11,19).to_list())
+
+fig, ax = plt.subplots(1,1,figsize=(15,8))
+
+
+
+ax.plot(x, y, 'go', label = "sleep start time")
+
+ax.yaxis_date()
+ax.xaxis_date()
+
+formatter = dates.DateFormatter('%H:%M')
+ax.yaxis.set_major_formatter(formatter)
+
+y2 = mdates.datestr2num(df.end_time.apply(str).str.slice(11,19).to_list())
+
+
+ax.plot(x, y2, 'ro', label = "wake up time")
+
+ax.yaxis_date()
+
+ax.axhline(y = mdates.datestr2num("23:30:00"), color = 'g', linestyle = 'dashed', label = 'Expected sleep start time')
+ax.axhline(y = mdates.datestr2num("07:30:00"), color = 'r', linestyle = 'dashed', label = 'Expected wake up time')
+
+ax.xaxis.set_tick_params(rotation=45)
+# Optional. Just rotates x-ticklabels in this case.
+#fig.autofmt_xdate()
+ax.grid(alpha = 0.3)
+plt.legend()
 plt.show()
 
 
