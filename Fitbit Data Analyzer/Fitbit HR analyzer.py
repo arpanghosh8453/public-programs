@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[207]:
+# In[38]:
 
 
 get_ipython().run_line_magic('matplotlib', 'inline')
@@ -13,9 +13,10 @@ import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import dates
+import matplotlib.dates as mdates
 
 
-# In[3]:
+# In[2]:
 
 
 # Implicit Grant Flow
@@ -25,7 +26,7 @@ from matplotlib import dates
 access_token = "OAuth Token"
 
 start_date = "2021-03-18"
-end_date = "2021-03-30"
+end_date = "2021-04-01"
 
 
 # <h2>HR analysis</h2>
@@ -97,7 +98,7 @@ summary_df.plot.area(ylim=(40,160))
 
 # <h2>Sleep analysis</h2>
 
-# In[16]:
+# In[3]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -105,7 +106,7 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1.2/user/-/sleep/date/"+start_date+"/"+end_date+".json", headers=header).json()
 
 
-# In[43]:
+# In[4]:
 
 
 combined_list = []
@@ -118,13 +119,13 @@ for i in range(len(response['sleep'])):
         pass
 
 
-# In[44]:
+# In[5]:
 
 
 sleep_df = pd.DataFrame(combined_list)
 
 
-# In[45]:
+# In[8]:
 
 
 #Plotting data
@@ -134,7 +135,7 @@ sleep_df.set_index('day').plot(kind='bar', stacked=True, color=['#154BA6', '#3F8
 
 # <h2>Resting heart rate</h2>
 
-# In[90]:
+# In[9]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -142,7 +143,7 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1/user/-/activities/heart/date/"+start_date+"/"+end_date+".json", headers=header).json()
 
 
-# In[91]:
+# In[10]:
 
 
 all_resting_HR_list = []
@@ -155,7 +156,7 @@ resting_HR_df.dateTime = resting_HR_df.dateTime.apply(pd.Timestamp)
 resting_HR_df.set_index("dateTime", inplace = True)
 
 
-# In[107]:
+# In[11]:
 
 
 plt.rcParams["figure.figsize"]=20,8
@@ -166,7 +167,7 @@ plt.legend()
 plt.axhline(y = resting_HR_df.resting_HR.median(), color = 'g', linestyle = 'dashed')
 
 
-# In[97]:
+# In[12]:
 
 
 start = pd.Timestamp(resting_HR_df.index[0])
@@ -176,7 +177,7 @@ x_ = pd.to_datetime(t)
 y_ = resting_HR_df.resting_HR.to_list()
 
 
-# In[98]:
+# In[13]:
 
 
 from scipy.interpolate import make_interp_spline
@@ -184,7 +185,7 @@ from scipy.interpolate import make_interp_spline
 X_Y_Spline = make_interp_spline(x_,y_)
 
 
-# In[110]:
+# In[14]:
 
 
 X_ = np.linspace(start.value, end.value, 1000)
@@ -200,7 +201,7 @@ plt.plot(resting_HR_df,linestyle='', marker='o', color='r')
 
 # <h2>Activity minutes</h2>
 
-# In[4]:
+# In[15]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -224,7 +225,7 @@ minutesVeryActive_list = [int(i['value']) for i in response['activities-tracker-
 datetime_list = [i['dateTime'] for i in response['activities-tracker-minutesVeryActive']]
 
 
-# In[14]:
+# In[17]:
 
 
 data_activity = {'minutesSedentary':minutesSedentary_list, 'minutesLightlyActive':minutesLightlyActive_list, 'minutesFairlyActive':minutesFairlyActive_list, 'minutesVeryActive':minutesVeryActive_list}
@@ -236,7 +237,7 @@ pd.DataFrame(data_activity, index=datetime_list)[['minutesLightlyActive', 'minut
 
 # <h2>Step count</h2>
 
-# In[96]:
+# In[18]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -244,7 +245,7 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1/user/-/activities/steps/date/"+start_date+"/"+end_date+"/1min.json", headers=header).json()['activities-steps']
 
 
-# In[97]:
+# In[19]:
 
 
 step_df = pd.DataFrame(response)
@@ -257,7 +258,7 @@ step_df.plot(kind = 'bar')
 
 # <h2>Distance</h2>
 
-# In[98]:
+# In[20]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -265,7 +266,7 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1/user/-/activities/distance/date/"+start_date+"/"+end_date+"/1min.json", headers=header).json()['activities-distance']
 
 
-# In[101]:
+# In[21]:
 
 
 distance_df = pd.DataFrame(response)
@@ -278,7 +279,7 @@ distance_df.plot(kind = 'bar')
 
 # <h2>Floor count</h2>
 
-# In[100]:
+# In[22]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -286,7 +287,7 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1/user/-/activities/floors/date/"+start_date+"/"+end_date+"/1min.json", headers=header).json()['activities-floors']
 
 
-# In[104]:
+# In[23]:
 
 
 floor_df = pd.DataFrame(response)
@@ -299,7 +300,7 @@ floor_df.plot(kind = 'bar')
 
 # <h2>Calories</h2>
 
-# In[106]:
+# In[24]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -307,7 +308,7 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1/user/-/activities/calories/date/"+start_date+"/"+end_date+"/1min.json", headers=header).json()['activities-calories']
 
 
-# In[114]:
+# In[25]:
 
 
 calorie_df = pd.DataFrame(response)
@@ -320,7 +321,7 @@ calorie_df.plot(kind = 'bar', ylim = (1800,2800))
 
 # <h2>Elevation</h2>
 
-# In[126]:
+# In[26]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -328,7 +329,7 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1/user/-/activities/elevation/date/"+start_date+"/"+end_date+"/1min.json", headers=header).json()['activities-elevation']
 
 
-# In[129]:
+# In[27]:
 
 
 elevation_df = pd.DataFrame(response)
@@ -341,13 +342,13 @@ elevation_df.plot(kind = 'bar')
 
 # <h2>Sleeping HR</h2>
 
-# In[130]:
+# In[28]:
 
 
-sleep_HR_date = "2021-03-31"
+sleep_HR_date = "2021-04-02"
 
 
-# In[131]:
+# In[29]:
 
 
 splitted_date = sleep_HR_date.split('-')
@@ -363,7 +364,7 @@ Previous_Date = datetime.datetime(year,month,day) - datetime.timedelta(days=1)
 Previous_Date = parse(Previous_Date.strftime('%m/%d/%Y'))
 
 
-# In[132]:
+# In[30]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -374,14 +375,14 @@ prev_response = requests.get("https://api.fitbit.com/1/user/-/activities/heart/d
 sleep_response = requests.get("https://api.fitbit.com/1/user/-/sleep/date/"+sleep_HR_date+".json", headers=header).json()
 
 
-# In[133]:
+# In[31]:
 
 
 sleep_start_time = sleep_response['sleep'][0]['startTime']
 sleep_end_time = sleep_response['sleep'][0]['endTime']
 
 
-# In[134]:
+# In[32]:
 
 
 df = pd.DataFrame(response['activities-heart-intraday']['dataset'])
@@ -393,7 +394,7 @@ del df2['time']
 df = df2.append(df)
 
 
-# In[135]:
+# In[33]:
 
 
 #range % determination
@@ -405,7 +406,7 @@ below_resting = 100 - above_resting
 #print("Above resting HR :",above_resting,"% \n\n Below resting HR :",below_resting,"%")
 
 
-# In[137]:
+# In[34]:
 
 
 plt.rcParams["figure.figsize"]=16,4
@@ -422,7 +423,7 @@ plt.show()
 
 # <h2>Sleep timing</h2>
 
-# In[203]:
+# In[51]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -430,7 +431,18 @@ header = {'Authorization': 'Bearer {}'.format(access_token)}
 response = requests.get("https://api.fitbit.com/1.2/user/-/sleep/date/"+start_date+"/"+end_date+".json", headers=header).json()
 
 
-# In[214]:
+# In[52]:
+
+
+sleep_duration_list = []
+for i in response['sleep']:
+    sleep_duration_list.append({'date':i['dateOfSleep'], 'start_time':i['startTime'], 'end_time':i['endTime']})
+    
+df = pd.DataFrame(sleep_duration_list)
+df = df.set_index('date')
+
+
+# In[53]:
 
 
 # Convert to matplotlib's internal date format.
@@ -465,10 +477,4 @@ ax.xaxis.set_tick_params(rotation=45)
 ax.grid(alpha = 0.3)
 plt.legend()
 plt.show()
-
-
-# In[ ]:
-
-
-
 
