@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[250]:
+# In[1]:
 
-
-get_ipython().run_line_magic('matplotlib', 'inline')
 
 #You need the following modues, if you don't have them, use pip install <module-name>
 import requests
@@ -16,7 +14,7 @@ from matplotlib import dates
 import matplotlib.dates as mdates
 
 
-# In[306]:
+# In[140]:
 
 
 # Implicit Grant Flow
@@ -28,18 +26,16 @@ access_token = "OAuth Token"
 day_range_length = 15
 
 start_date = str((datetime.datetime.now() - datetime.timedelta(days=day_range_length)).date())
-#start_date = "2021-03-19"
+#start_date = "2021-03-13"
 
 end_date = str(datetime.datetime.date(datetime.datetime.now())) 
 #end_date = "2021-04-02"
 
 
-# <h2>HR analysis</h2>
+# <h2>HR analysis [Long loop inside]</h2>
 
 # In[263]:
 
-
-import datetime
 
 #Update your start and end dates here in yyyy-mm-dd format 
 start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
@@ -214,7 +210,7 @@ plt.plot(resting_HR_df,linestyle='', marker='o', color='r')
 
 # <h2>Activity minutes</h2>
 
-# In[279]:
+# In[141]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
@@ -238,14 +234,77 @@ minutesVeryActive_list = [int(i['value']) for i in response['activities-tracker-
 datetime_list = [i['dateTime'] for i in response['activities-tracker-minutesVeryActive']]
 
 
-# In[280]:
+# In[142]:
 
 
 data_activity = {'minutesSedentary':minutesSedentary_list, 'minutesLightlyActive':minutesLightlyActive_list, 'minutesFairlyActive':minutesFairlyActive_list, 'minutesVeryActive':minutesVeryActive_list}
 
 plt.rcParams["figure.figsize"]=12,4
 
-pd.DataFrame(data_activity, index=datetime_list)[['minutesLightlyActive', 'minutesFairlyActive', 'minutesVeryActive']].plot(kind='bar', stacked=True, color=['#7EB26D', '#FFB357', '#E43B4A'])
+df = pd.DataFrame(data_activity, index=datetime_list)
+
+df['totalMinutesActive'] = df['minutesLightlyActive'] + df['minutesFairlyActive'] + df['minutesVeryActive']
+
+df[['minutesLightlyActive', 'minutesFairlyActive', 'minutesVeryActive']].plot(kind='bar', stacked=True, color=['#7EB26D', '#FFB357', '#E43B4A'])
+
+
+# In[143]:
+
+
+plt.rcParams["figure.figsize"]=12,4
+
+#df[['minutesSedentary', 'totalMinutesActive']].plot(kind='bar', stacked=True, color=['#FFB357', '#E43B4A'], ylim = (350,1200))
+
+df['Active minutes %'] = round((df['totalMinutesActive']/(df['totalMinutesActive'] + df['minutesSedentary']))*100)
+
+df['Static minutes %'] = round((df['minutesSedentary']/(df['totalMinutesActive'] + df['minutesSedentary']))*100)
+
+df[['Static minutes %','Active minutes %']].plot(kind='bar', stacked=True, color=['#FFB357', '#7EB26D'])
+
+plt.axhline(y = 65, color = 'r', linestyle = 'dashed', label = 'Average %', alpha = 0.8)
+
+
+# <h2>Moving minutes [Long loop inside]</h2>
+
+# In[144]:
+
+
+start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+end = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
+date_array = (start + datetime.timedelta(days=x) for x in range(0, (end-start).days))
+
+day_list = []
+for date_object in date_array:
+    day_list.append(date_object.strftime("%Y-%m-%d"))
+
+
+# In[145]:
+
+
+header = {'Authorization': 'Bearer {}'.format(access_token)}
+
+steps_interday_list = []
+
+for single_day in day_list:
+    response = requests.get("https://api.fitbit.com/1/user/-/activities/steps/date/"+single_day+"/1d/1min.json", headers=header).json()
+    df = pd.DataFrame(response['activities-steps-intraday']['dataset'])
+    steps_interday_list.append({"date":response['activities-steps'][0]['dateTime'], "walking minutes":len(df[df['value'] != 0]), "Not moving minutes" : len(df) - len(df[df['value'] != 0])})
+
+
+# In[146]:
+
+
+df = pd.DataFrame(steps_interday_list, index = day_list)
+del df['date']
+
+
+# In[147]:
+
+
+df[['Not moving minutes','walking minutes']].plot(kind='bar', stacked=True, color=['#FFB357', '#E43B4A'], ylim = (900,1490))
+
+plt.axhline(y = 1150, color = 'g', linestyle = 'dashed', label = 'Average %', alpha = 0.8)
 
 
 # <h2>Step count</h2>
