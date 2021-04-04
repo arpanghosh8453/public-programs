@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
+# In[199]:
 
 #You need the following modues, if you don't have them, use pip install <module-name>
 import requests
@@ -12,9 +11,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import dates
 import matplotlib.dates as mdates
+import matplotlib.patches as mpatches
+import matplotlib.ticker as ticker
+import matplotlib.cm as cm
+import matplotlib as mpl
+import seaborn as sns
 
 
-# In[140]:
+# In[2]:
 
 
 # Implicit Grant Flow
@@ -264,9 +268,9 @@ df[['Static minutes %','Active minutes %']].plot(kind='bar', stacked=True, color
 plt.axhline(y = 65, color = 'r', linestyle = 'dashed', label = 'Average %', alpha = 0.8)
 
 
-# <h2>Moving minutes [Long loop inside]</h2>
+# <h2>Moving minutes & Hourly steps [Long loop inside]</h2>
 
-# In[144]:
+# In[41]:
 
 
 start = datetime.datetime.strptime(start_date, "%Y-%m-%d")
@@ -279,32 +283,79 @@ for date_object in date_array:
     day_list.append(date_object.strftime("%Y-%m-%d"))
 
 
-# In[145]:
+# In[42]:
 
 
 header = {'Authorization': 'Bearer {}'.format(access_token)}
 
 steps_interday_list = []
+hourly_steps_day_list = []
 
 for single_day in day_list:
     response = requests.get("https://api.fitbit.com/1/user/-/activities/steps/date/"+single_day+"/1d/1min.json", headers=header).json()
-    df = pd.DataFrame(response['activities-steps-intraday']['dataset'])
+    df = pd.DataFrame(response['activities-steps-intraday']['dataset'])[360:]
     steps_interday_list.append({"date":response['activities-steps'][0]['dateTime'], "walking minutes":len(df[df['value'] != 0]), "Not moving minutes" : len(df) - len(df[df['value'] != 0])})
+    df['datetime'] = pd.to_datetime(response['activities-steps'][0]['dateTime'] + ' ' + df['time'].astype(str))
+    hourly_steps_day_list.append(df.groupby(pd.to_datetime(df.datetime.dt.strftime('%Y-%m-%d %H'))).agg({'value':'sum'}))
 
 
-# In[146]:
+# In[43]:
 
 
 df = pd.DataFrame(steps_interday_list, index = day_list)
 del df['date']
 
 
-# In[147]:
+# In[44]:
 
 
-df[['Not moving minutes','walking minutes']].plot(kind='bar', stacked=True, color=['#FFB357', '#E43B4A'], ylim = (900,1490))
+plt.rcParams["figure.figsize"]=12,4
 
-plt.axhline(y = 1150, color = 'g', linestyle = 'dashed', label = 'Average %', alpha = 0.8)
+df[['Not moving minutes','walking minutes']].plot(kind='bar', stacked=True, color=['#FFB357', '#E43B4A'])
+
+plt.axhline(y = 800, color = 'g', linestyle = 'dashed', label = 'Average %', alpha = 0.8)
+
+
+# In[196]:
+
+
+all_dates_list = []
+all_steps_list = []
+
+for i in hourly_steps_day_list:
+    all_dates_list.append(str(i.index[0].date()))
+    all_steps_list.append(i.value.to_list())
+
+all_hourly_steps_df = pd.DataFrame(np.array(all_steps_list), columns=['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'], index = all_dates_list)
+
+
+# In[202]:
+
+
+from matplotlib.colors import LinearSegmentedColormap
+
+def create_label(value):
+    if value == 0:
+        return '▪'
+    else:
+        return ""
+
+fig = plt.figure(figsize=(15,10))
+
+cmap = sns.cubehelix_palette(start=0.2, rot=.2, light=0.99, n_colors=25)
+labels = all_hourly_steps_df.T.applymap(create_label)
+
+ax = sns.heatmap(all_hourly_steps_df.T, cmap=cmap, linewidths=.5, linecolor='white', annot=labels, annot_kws={'fontsize':14, 'color' :'red'}, fmt='')
+ax.set_title('Hourly steps heatmap plot')
+ax.invert_yaxis()
+plt.yticks(rotation=-0)
+red_patch = mpatches.Patch(color='red', label='No steps')
+plt.legend(handles=[red_patch])
+
+# Manually specify colorbar labelling after it's been generated
+colorbar = ax.collections[0].colorbar
+colorbar.set_ticks([0, 250, 500, 1000, 2000, 3000, 4000, 5000, 5500])
+colorbar.set_ticklabels(['0', '250', '500', '1000', '2000', '3000', '4000','5000', '5500'])
 
 
 # <h2>Step count</h2>
@@ -582,6 +633,8 @@ plt.legend()
 #plt.gca().invert_yaxis()
 plt.show()
 
+
+# <h2> test </h2>
 
 # In[ ]:
 
