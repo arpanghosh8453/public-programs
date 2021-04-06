@@ -38,6 +38,31 @@ def fetch_data(category, type, date_var):
                 }
             })
 
+def fetch_hourly_steps(date):
+    try:
+        response = requests.get('https://api.fitbit.com/1/user/-/activities/steps/date/' + date + '/1d/1min.json', 
+            headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        print("HTTP request failed: %s" % (err))
+        sys.exit()
+
+    data = response.json()
+    print("Got daily steps for "+date+" from Fitbit")
+
+    if 'activities-steps-intraday' in data:
+        for value in data['activities-steps-intraday']['dataset']:
+            time = datetime.fromisoformat(date + "T" + value['time'])
+            utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
+            points.append({
+                    "measurement": "hourly_steps",
+                    "time": utc_time,
+                    "fields": {
+                        "value": float(value['value'])
+                    }
+                })
+
+
 def fetch_heartrate(date):
     try:
         response = requests.get('https://api.fitbit.com/1/user/-/activities/heart/date/' + date + '/1d/1sec.json', 
@@ -321,6 +346,7 @@ fetch_data('body', 'bmi', previous_date)
 fetch_data('foods/log', 'water', previous_date)
 fetch_data('foods/log', 'caloriesIn', previous_date)
 fetch_heartrate(previous_date)
+fetch_hourly_steps(previous_date)
 fetch_activities(same_date) #Special one requires same date for previous day one
 
 #Same day logging
@@ -341,6 +367,7 @@ fetch_data('body', 'bmi', same_date)
 fetch_data('foods/log', 'water', same_date)
 fetch_data('foods/log', 'caloriesIn', same_date)
 fetch_heartrate(same_date)
+fetch_hourly_steps(same_date)
 fetch_activities(next_date) #Special one requires next date for same day one
 
 
