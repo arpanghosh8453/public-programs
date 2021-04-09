@@ -12,8 +12,8 @@ FITBIT_INITIAL_CODE = ''
 REDIRECT_URI = 'https://localhost'
 INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086
-INFLUXDB_USERNAME = 'arpan'
-INFLUXDB_PASSWORD = '#Password#1'
+INFLUXDB_USERNAME = 'database_username'
+INFLUXDB_PASSWORD = 'database_password'
 INFLUXDB_DATABASE = 'fitbit'
 points = []
 
@@ -142,13 +142,13 @@ def fetch_heartrate(date):
 
 def process_levels(levels):
     for level in levels:
-        type = level['level']
-        if type == "asleep":
-            type = "light"
-        if type == "restless":
-            type = "rem"
-        if type == "awake":
-            type = "wake"
+        sleep_type = level['level']
+        if sleep_type == "asleep":
+            sleep_type = "light"
+        if sleep_type == "restless":
+            sleep_type = "rem"
+        if sleep_type == "awake":
+            sleep_type = "wake"
 
         time = datetime.fromisoformat(level['dateTime'])
         utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
@@ -156,7 +156,8 @@ def process_levels(levels):
                 "measurement": "sleep_levels",
                 "time": utc_time,
                 "fields": {
-                    "seconds": int(level['seconds'])
+                    "seconds": int(level['seconds']),
+                    "sleep_type": sleep_type
                 }
             })
 
@@ -335,8 +336,23 @@ for day in data['sleep']:
     if 'data' in day['levels']:
         process_levels(day['levels']['data'])
     
+    #skipping short data
+    '''
     if 'shortData' in day['levels']:
         process_levels(day['levels']['shortData'])
+    '''
+
+    sleep_end_time = LOCAL_TIMEZONE.localize(datetime.fromisoformat(day['endTime'])).astimezone(pytz.utc).isoformat()
+
+    points.append({
+            "measurement": "sleep_levels",
+            "time": sleep_end_time,
+            "fields": {
+                "seconds": 1800,
+                "sleep_type": "wake"
+            }
+        })
+
 
 print("\n=====================Sleep logs updated====================\n")
 
@@ -385,6 +401,6 @@ for day_date in day_list:
     print("\n=============================== O ===============================\n")
 
     iteration_count += 1
-    if iteration_count % 5 == 0:
+    if iteration_count % 8 == 0:
         print("\n--------------Assuming API limit reached : Pausing script for an hour-----------------\n")
         time.sleep(3660)

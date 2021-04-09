@@ -12,10 +12,16 @@ FITBIT_INITIAL_CODE = ''
 REDIRECT_URI = 'https://localhost'
 INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086
-INFLUXDB_USERNAME = 'arpan'
-INFLUXDB_PASSWORD = '#Password#1'
+INFLUXDB_USERNAME = 'database_username'
+INFLUXDB_PASSWORD = 'database_password'
 INFLUXDB_DATABASE = 'fitbit'
 points = []
+
+filehandle = open("D:/docker_volumes/database_update_log.txt", "a")
+
+filehandle.write("\n\n########################  Script start time : " + str(datetime.now()) + "  ############################\n\n")
+
+print("\nWorking : Writting log to D:/docker_volumes/database_update_log.txt\n")
 
 def fetch_data(category, type, date_var):
     try:
@@ -23,11 +29,11 @@ def fetch_data(category, type, date_var):
             headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
         response.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        print("HTTP request failed: %s" % (err))
+        filehandle.write("\nHTTP request failed: %s \n" % (err))
         sys.exit()
 
     data = response.json()
-    print("Got " + type + " for "+ date_var +" from Fitbit")
+    filehandle.write("\nGot " + type + " for "+ date_var +" from Fitbit\n")
 
     for day in data[category.replace('/', '-') + '-' + type]:
         points.append({
@@ -44,11 +50,11 @@ def fetch_hourly_steps(date):
             headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
         response.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        print("HTTP request failed: %s" % (err))
+        filehandle.write("\nHTTP request failed: %s \n" % (err))
         sys.exit()
 
     data = response.json()
-    print("Got daily steps for "+date+" from Fitbit")
+    filehandle.write("\n Got daily steps for "+date+" from Fitbit \n")
 
     if 'activities-steps-intraday' in data:
         for value in data['activities-steps-intraday']['dataset']:
@@ -69,11 +75,11 @@ def fetch_heartrate(date):
             headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
         response.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        print("HTTP request failed: %s" % (err))
+        filehandle.write("\nHTTP request failed: %s \n" % (err))
         sys.exit()
 
     data = response.json()
-    print("Got heartrates for "+date+" from Fitbit")
+    filehandle.write("\nGot heartrates for "+date+" from Fitbit\n")
 
     for day in data['activities-heart']:
         if 'restingHeartRate' in day['value']:
@@ -129,13 +135,13 @@ def fetch_heartrate(date):
 
 def process_levels(levels):
     for level in levels:
-        type = level['level']
-        if type == "asleep":
-            type = "light"
-        if type == "restless":
-            type = "rem"
-        if type == "awake":
-            type = "wake"
+        sleep_type = level['level']
+        if sleep_type == "asleep":
+            sleep_type = "light"
+        if sleep_type == "restless":
+            sleep_type = "rem"
+        if sleep_type == "awake":
+            sleep_type = "wake"
 
         time = datetime.fromisoformat(level['dateTime'])
         utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
@@ -143,10 +149,11 @@ def process_levels(levels):
                 "measurement": "sleep_levels",
                 "time": utc_time,
                 "fields": {
-                    "seconds": int(level['seconds'])
+                    "seconds": int(level['seconds']),
+                    "sleep_type": sleep_type
                 }
             })
-
+            
 def fetch_activities(date):
     try:
         response = requests.get('https://api.fitbit.com/1/user/-/activities/list.json',
@@ -154,11 +161,11 @@ def fetch_activities(date):
             params={'beforeDate': date, 'sort':'desc', 'limit':10, 'offset':0})
         response.raise_for_status()
     except requests.exceptions.HTTPError as err:
-        print("HTTP request failed: %s" % (err))
+        filehandle.write("\nHTTP request failed: %s \n" % (err))
         sys.exit()
 
     data = response.json()
-    print("Got activities from Fitbit for before_date: "+date)
+    filehandle.write("\nGot activities from Fitbit for before_date: "+date+"\n")
 
     for activity in data['activities']:
         fields = {}
@@ -206,7 +213,7 @@ try:
     client.create_database(INFLUXDB_DATABASE)
     client.switch_database(INFLUXDB_DATABASE)
 except InfluxDBClientError as err:
-    print("InfluxDB connection failed: %s" % (err))
+    filehandle.write("\nInfluxDB connection failed: %s \n" % (err))
     sys.exit()
 
 if not FITBIT_ACCESS_TOKEN:
@@ -244,11 +251,11 @@ try:
         headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
     response.raise_for_status()
 except requests.exceptions.HTTPError as err:
-    print("HTTP request failed: %s" % (err))
+    filehandle.write("\nHTTP request failed: %s \n" % (err))
     sys.exit()
 
 data = response.json()
-print("Got devices from Fitbit for current datetime "+str(datetime.today()))
+filehandle.write("\nGot devices from Fitbit for current datetime "+str(datetime.today())+"\n")
 
 for device in data:
     points.append({
@@ -273,11 +280,11 @@ try:
         headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
     response.raise_for_status()
 except requests.exceptions.HTTPError as err:
-    print("HTTP request failed: %s" % (err))
+    filehandle.write("\nHTTP request failed: %s \n" % (err))
     sys.exit()
 
 data = response.json()
-print("Got sleep sessions from Fitbit")
+filehandle.write("\nGot sleep sessions from Fitbit\n")
 
 for day in data['sleep']:
     time = datetime.fromisoformat(day['startTime'])
@@ -320,8 +327,23 @@ for day in data['sleep']:
     if 'data' in day['levels']:
         process_levels(day['levels']['data'])
     
+    #skipping short data
+    '''
     if 'shortData' in day['levels']:
         process_levels(day['levels']['shortData'])
+    '''
+
+    sleep_end_time = LOCAL_TIMEZONE.localize(datetime.fromisoformat(day['endTime'])).astimezone(pytz.utc).isoformat()
+
+    points.append({
+            "measurement": "sleep_levels",
+            "time": sleep_end_time,
+            "fields": {
+                "seconds": 1800,
+                "sleep_type": "wake"
+            }
+        })
+
 
 
 same_date = (date.today()).isoformat()
@@ -374,7 +396,9 @@ fetch_activities(next_date) #Special one requires next date for same day one
 try:
     client.write_points(points)
 except InfluxDBClientError as err:
-    print("Unable to write points to InfluxDB: %s" % (err))
+    filehandle.write("\nUnable to write points to InfluxDB: %s \n" % (err))
     sys.exit()
 
+filehandle.write("\nSuccessfully wrote %s data points to InfluxDB\n" % (len(points)))
 print("Successfully wrote %s data points to InfluxDB" % (len(points)))
+filehandle.close()
