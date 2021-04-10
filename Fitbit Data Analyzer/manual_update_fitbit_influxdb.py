@@ -4,17 +4,16 @@ from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
 
 LOCAL_TIMEZONE = pytz.timezone('Asia/Calcutta')
-FITBIT_LANGUAGE = 'en_US'
-FITBIT_CLIENT_ID = '22CDG5'
-FITBIT_CLIENT_SECRET = 'dd98ae065e1453ba7dbe0265fa939de7'
-#FITBIT_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyMkNDSjYiLCJzdWIiOiI5OUNIODMiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJudXQgcnBybyByc2xlIiwiZXhwIjoxNjIwMjI4MjQxLCJpYXQiOjE2MTc2MzYyNDF9.7eYVA_6TF4Q_X78zCIsViWJbXcGGIXTnHZmDX0YF4Z4'
+FITBIT_LANGUAGE = ''
+FITBIT_CLIENT_ID = ''
+FITBIT_CLIENT_SECRET = ''
 FITBIT_ACCESS_TOKEN = ''
-FITBIT_INITIAL_CODE = 'd2c1e93812ecc7a110577e43b7c1711d7daa52b6'
+FITBIT_INITIAL_CODE = ''
 REDIRECT_URI = 'http://localhost/8080'
 INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086
-INFLUXDB_USERNAME = 'arpan'
-INFLUXDB_PASSWORD = '#Password#1'
+INFLUXDB_USERNAME = 'database_username'
+INFLUXDB_PASSWORD = 'database_password'
 INFLUXDB_DATABASE = 'fitbit'
 points = []
 
@@ -170,12 +169,17 @@ def process_levels(levels):
 
         time = datetime.fromisoformat(level['dateTime'])
         utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
+        if 'short' in level:
+            flag = level['short']
+        else:
+            flag = True
         points.append({
                 "measurement": "sleep_levels",
                 "time": utc_time,
                 "fields": {
                     "seconds": int(level['seconds']),
-                    "sleep_type": sleep_type
+                    "sleep_type": sleep_type,
+                    "short" : flag
                 }
             })
 
@@ -377,10 +381,10 @@ for day in data['sleep']:
             "time": sleep_end_time,
             "fields": {
                 "seconds": 1800,
-                "sleep_type": "wake"
+                "sleep_type": "wake",
+                "short" : False
             }
         })
-
 
 print("\n=====================Sleep logs updated====================\n")
 

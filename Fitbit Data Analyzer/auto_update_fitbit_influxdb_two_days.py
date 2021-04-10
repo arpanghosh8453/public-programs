@@ -4,7 +4,7 @@ from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
 
 LOCAL_TIMEZONE = pytz.timezone('Asia/Calcutta')
-FITBIT_LANGUAGE = 'en_US'
+FITBIT_LANGUAGE = ''
 FITBIT_CLIENT_ID = ''
 FITBIT_CLIENT_SECRET = ''
 FITBIT_ACCESS_TOKEN = ''
@@ -168,12 +168,17 @@ def process_levels(levels):
 
         time = datetime.fromisoformat(level['dateTime'])
         utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
+        if 'short' in level:
+            flag = level['short']
+        else:
+            flag = True
         points.append({
                 "measurement": "sleep_levels",
                 "time": utc_time,
                 "fields": {
                     "seconds": int(level['seconds']),
-                    "sleep_type": sleep_type
+                    "sleep_type": sleep_type,
+                    "short" : flag
                 }
             })
 
@@ -381,7 +386,8 @@ for day in data['sleep']:
             "time": sleep_end_time,
             "fields": {
                 "seconds": 1800,
-                "sleep_type": "wake"
+                "sleep_type": "wake",
+                "short" : False
             }
         })
 
