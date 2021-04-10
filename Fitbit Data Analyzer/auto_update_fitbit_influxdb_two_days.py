@@ -7,7 +7,6 @@ LOCAL_TIMEZONE = pytz.timezone('Asia/Calcutta')
 FITBIT_LANGUAGE = 'en_US'
 FITBIT_CLIENT_ID = ''
 FITBIT_CLIENT_SECRET = ''
-#FITBIT_ACCESS_TOKEN = ''
 FITBIT_ACCESS_TOKEN = ''
 FITBIT_INITIAL_CODE = ''
 REDIRECT_URI = 'http://localhost/8080'
@@ -142,7 +141,23 @@ def fetch_heartrate(date):
                 })
 
 def process_levels(levels):
-    for level in levels:
+    if not levels:
+        return
+    unsorted_list = levels
+    sorted_list = sorted(unsorted_list, key=lambda k: k['dateTime_obj']) 
+    data_added_list = []
+    for item in sorted_list:
+        data_added_list.append(item)
+        if item["short"]:
+            insert_item = {}
+            prev_item = data_added_list[-2]
+            insert_item["level"] = prev_item["level"]
+            newtime = item["dateTime_obj"] + timedelta(0,item["seconds"])
+            insert_item["dateTime"] = newtime.strftime("%Y-%m-%dT%H:%M:%S.%f")
+            insert_item["seconds"] = item["seconds"]
+            data_added_list.append(insert_item)
+
+    for level in data_added_list:
         sleep_type = level['level']
         if sleep_type == "asleep":
             sleep_type = "light"
@@ -161,6 +176,7 @@ def process_levels(levels):
                     "sleep_type": sleep_type
                 }
             })
+
             
 def fetch_activities(date):
     try:
@@ -340,14 +356,23 @@ for day in data['sleep']:
             }
         })
     
+    longdata = []
+    shortdata = []
     if 'data' in day['levels']:
-        process_levels(day['levels']['data'])
+        longdata = day['levels']['data']
+        for entry in longdata:
+            dtobj = datetime.strptime(entry["dateTime"], "%Y-%m-%dT%H:%M:%S.%f")
+            entry["dateTime_obj"] = dtobj
+            entry["short"] = False
     
-    #skipping short data
-    '''
     if 'shortData' in day['levels']:
-        process_levels(day['levels']['shortData'])
-    '''
+        shortdata = day['levels']['shortData']
+        for entry in shortdata:
+            dtobj = datetime.strptime(entry["dateTime"], "%Y-%m-%dT%H:%M:%S.%f")
+            entry["dateTime_obj"] = dtobj
+            entry["short"] = True
+    
+    process_levels(longdata + shortdata)
 
     sleep_end_time = LOCAL_TIMEZONE.localize(datetime.fromisoformat(day['endTime'])).astimezone(pytz.utc).isoformat()
 
@@ -359,7 +384,6 @@ for day in data['sleep']:
                 "sleep_type": "wake"
             }
         })
-
 
 
 same_date = (date.today()).isoformat()
