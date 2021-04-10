@@ -155,6 +155,7 @@ def process_levels(levels):
             newtime = item["dateTime_obj"] + timedelta(0,item["seconds"])
             insert_item["dateTime"] = newtime.strftime("%Y-%m-%dT%H:%M:%S.%f")
             insert_item["seconds"] = item["seconds"]
+            insert_item["short"] = True
             data_added_list.append(insert_item)
 
     for level in data_added_list:
