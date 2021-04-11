@@ -2,9 +2,11 @@ import requests, sys, os, pytz
 from datetime import datetime, date, timedelta
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
+import pandas as pd
+import datetime as DT
 
 LOCAL_TIMEZONE = pytz.timezone('Asia/Calcutta')
-FITBIT_LANGUAGE = ''
+FITBIT_LANGUAGE = 'en_US'
 FITBIT_CLIENT_ID = ''
 FITBIT_CLIENT_SECRET = ''
 FITBIT_ACCESS_TOKEN = ''
@@ -16,6 +18,7 @@ INFLUXDB_USERNAME = 'database_username'
 INFLUXDB_PASSWORD = 'database_password'
 INFLUXDB_DATABASE = 'fitbit'
 points = []
+
 
 
 #dates variable assignment
@@ -62,7 +65,7 @@ def fetch_hourly_steps(date):
         sys.exit()
 
     data = response.json()
-    print("Got daily steps for "+date+" from Fitbit")
+    print("Got daily hourly steps for "+date+" from Fitbit")
 
     if 'activities-steps-intraday' in data:
         for value in data['activities-steps-intraday']['dataset']:
@@ -73,6 +76,23 @@ def fetch_hourly_steps(date):
                     "time": utc_time,
                     "fields": {
                         "value": float(value['value'])
+                    }
+                })
+
+    if 'activities-steps-intraday' in data:
+        df = pd.DataFrame(data['activities-steps-intraday']['dataset'])
+        df['datetime'] = pd.to_datetime(data['activities-steps'][0]['dateTime'] + ' ' + df['time'].astype(str))
+        hourly_dict = eval(df.groupby(pd.to_datetime(df.datetime.dt.strftime('%Y-%m-%d %H'))).agg({'value':'sum'}).to_json())["value"]
+        #print(hourly_dict)
+        for key in hourly_dict.keys():
+            time = DT.datetime.utcfromtimestamp(int(key)/1000)
+            utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
+            points.append({
+                    "measurement": "hourly_steps_sum",
+                    "time": utc_time,
+                    "fields": {
+                        "value": hourly_dict[key],
+                        "greater than 250" : hourly_dict[key] > 250
                     }
                 })
 
@@ -248,8 +268,8 @@ except InfluxDBClientError as err:
     sys.exit()
 
 if not FITBIT_ACCESS_TOKEN:
-    if os.path.isfile('.fitbit-refreshtoken'):
-        f = open(".fitbit-refreshtoken", "r")
+    if os.path.isfile('C:/Users/Arpan Ghosh/.fitbit-refreshtoken'):
+        f = open('C:/Users/Arpan Ghosh/.fitbit-refreshtoken', "r")
         token = f.read()
         f.close()
         response = requests.post('https://api.fitbit.com/oauth2/token',
@@ -273,7 +293,7 @@ if not FITBIT_ACCESS_TOKEN:
     json = response.json()
     FITBIT_ACCESS_TOKEN = json['access_token']
     refresh_token = json['refresh_token']
-    f = open(".fitbit-refreshtoken", "w+")
+    f = open('C:/Users/Arpan Ghosh/.fitbit-refreshtoken', "w+")
     f.write(refresh_token)
     f.close()
 
@@ -425,6 +445,7 @@ for day_date in day_list:
 
     try:
         client.write_points(points)
+        points = []
     except InfluxDBClientError as err:
         print("Unable to write points to InfluxDB: %s" % (err))
         sys.exit()
