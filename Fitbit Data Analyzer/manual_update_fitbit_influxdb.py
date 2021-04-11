@@ -445,13 +445,12 @@ for day_date in day_list:
 
     try:
         client.write_points(points)
-        points = []
     except InfluxDBClientError as err:
         print("Unable to write points to InfluxDB: %s" % (err))
         sys.exit()
 
     print("Successfully wrote %s data points to InfluxDB" % (len(points)))
-
+    points = []
     print("\n=============================== O ===============================\n")
 
     iteration_count += 1
