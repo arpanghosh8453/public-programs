@@ -7,15 +7,15 @@ INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086
 INFLUXDB_USERNAME = 'db_username'
 INFLUXDB_PASSWORD = 'db_password'
-INFLUXDB_DATABASE = 'weather'
+INFLUXDB_DATABASE = 'db_name'
 LOCAL_TIMEZONE = pytz.timezone('Asia/Calcutta')
 api_key = "API key"
-city_name = "city location"
+city_name = "City"
 
 
 filehandle = open("D:/docker_volumes/database_update_log.txt", "a")
 filehandle.write("\n########################  Weather Logging started : " + str(datetime.now()) + "  ############################\n")
-filehandle.close()
+
 
 try:
     client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT, username=INFLUXDB_USERNAME, password=INFLUXDB_PASSWORD)
@@ -47,34 +47,33 @@ while True:
     # Check the value of "cod" key is equal to
     # "404", means city is found otherwise,
     # city is not found
-    if x["cod"] != "404":
-        # store the value of "main"
-        # key in variable y
+    if x["cod"] == 200:
+
         y = x["main"]
-    
-        # store the value corresponding
-        # to the "temp" key of y
+
         current_temperature = y["temp"]
-    
-        # store the value corresponding
-        # to the "pressure" key of y
         current_pressure = y["pressure"]
-    
-        # store the value corresponding
-        # to the "humidity" key of y
         current_humidiy = y["humidity"]
+        current_visibility = x["visibility"]
+        current_wind = x["wind"]
     
         try:
             client.write_points([
                 {"measurement": "temperature", "time": LOCAL_TIMEZONE.localize(current_datetime).astimezone(pytz.utc).isoformat(), "fields": {"value": current_temperature - 273.15}},
                 {"measurement": "pressure", "time": LOCAL_TIMEZONE.localize(current_datetime).astimezone(pytz.utc).isoformat(), "fields": {"value": current_pressure}},
-                {"measurement": "humidity", "time": LOCAL_TIMEZONE.localize(current_datetime).astimezone(pytz.utc).isoformat(), "fields": {"value": current_humidiy}}
+                {"measurement": "humidity", "time": LOCAL_TIMEZONE.localize(current_datetime).astimezone(pytz.utc).isoformat(), "fields": {"value": current_humidiy}},
+                {"measurement": "visibility", "time": LOCAL_TIMEZONE.localize(current_datetime).astimezone(pytz.utc).isoformat(), "fields": {"value": current_visibility}},
+                {"measurement": "wind", "time": LOCAL_TIMEZONE.localize(current_datetime).astimezone(pytz.utc).isoformat(), "fields": {"speed": current_wind["speed"], "deg": current_wind["deg"]}}
             ])
             print('temperature, pressure, humidity: ', current_temperature - 273.15, current_pressure, current_humidiy)
         except InfluxDBClientError as err:
             filehandle.write("\nUnable to write points to InfluxDB: %s \n" % (err))
             sys.exit()
-        else:
-            print(" City Not Found ")
+    else:
+        print(" Error : "+ str(x["cod"]) + " : " + str(x["message"]))
+        filehandle.write(" Error : "+ str(x["cod"]) + " : " + str(x["message"]))
+
 
     time.sleep(900)
+
+filehandle.close()
