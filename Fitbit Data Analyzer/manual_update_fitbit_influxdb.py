@@ -1,9 +1,10 @@
-import requests, sys, os, pytz
+import requests, sys, os, pytz, time
 from datetime import datetime, date, timedelta
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
 import pandas as pd
 import datetime as DT
+import xmltodict # for GPS xml analysis
 
 LOCAL_TIMEZONE = pytz.timezone('Asia/Calcutta')
 FITBIT_LANGUAGE = 'en_US'
@@ -18,8 +19,6 @@ INFLUXDB_USERNAME = 'database_username'
 INFLUXDB_PASSWORD = 'database_password'
 INFLUXDB_DATABASE = 'fitbit'
 points = []
-
-
 
 #dates variable assignment
 
@@ -205,11 +204,52 @@ def process_levels(levels):
             })
 
 
+def get_gps(tcx_url,activity_name,logid):
+    
+    header = {'Authorization': 'Bearer {}'.format(FITBIT_ACCESS_TOKEN)}
+    response = requests.get(tcx_url, headers=header)
+    data_dict = xmltodict.parse(response.content)
+    track_list = []
+    if 'Lap' in data_dict['TrainingCenterDatabase']['Activities']['Activity']:
+        if type(data_dict['TrainingCenterDatabase']['Activities']['Activity']['Lap']) is list:
+            for lap_entry in data_dict['TrainingCenterDatabase']['Activities']['Activity']['Lap']:
+                for entry in lap_entry['Track']['Trackpoint']:
+                    utc_time = LOCAL_TIMEZONE.localize(datetime.fromisoformat(entry['Time'][0:23])).astimezone(pytz.utc).isoformat()
+                    track_list.append({
+                                    "measurement": "GPS_track",
+                                    "time": utc_time,
+                                    "fields": {
+                                        "lat": float(entry['Position']['LatitudeDegrees']),
+                                        "long": float(entry['Position']['LongitudeDegrees']),
+                                        "alt": float(entry['AltitudeMeters']),
+                                        "activity_name": activity_name,
+                                        "id": logid
+
+                                    }
+                                })
+        else:    
+            for entry in data_dict['TrainingCenterDatabase']['Activities']['Activity']['Lap']['Track']['Trackpoint']:
+                utc_time = LOCAL_TIMEZONE.localize(datetime.fromisoformat(entry['Time'][0:23])).astimezone(pytz.utc).isoformat()
+                track_list.append({
+                                "measurement": "GPS_track",
+                                "time": utc_time,
+                                "fields": {
+                                    "lat": float(entry['Position']['LatitudeDegrees']),
+                                    "long": float(entry['Position']['LongitudeDegrees']),
+                                    "alt": float(entry['AltitudeMeters']),
+                                    "activity_name": activity_name,
+                                    "id": logid
+
+                                }
+                            })
+    return track_list
+
 def fetch_activities(date):
+    global points
     try:
         response = requests.get('https://api.fitbit.com/1/user/-/activities/list.json',
             headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE},
-            params={'beforeDate': date, 'sort':'desc', 'limit':10, 'offset':0})
+            params={'beforeDate': date, 'sort':'desc', 'limit':5, 'offset':0})
         response.raise_for_status()
     except requests.exceptions.HTTPError as err:
         print("HTTP request failed: %s" % (err))
@@ -240,6 +280,12 @@ def fetch_activities(date):
             fields['elevationGain'] = int(activity['elevationGain'])
         if 'steps' in activity:
             fields['steps'] = int(activity['steps'])
+        if 'tcxLink' in activity:
+            gps_track_list = get_gps(activity['tcxLink'], activity['activityName'], activity['logId'])
+            if len(gps_track_list) != 0:
+                print("Got GPS from Fitbit for log id: "+str(activity['logId']))
+                points += gps_track_list
+
 
         for level in activity['activityLevel']:
             if level['name'] == 'sedentary':
@@ -261,7 +307,8 @@ def fetch_activities(date):
 
 try:
     client = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT, username=INFLUXDB_USERNAME, password=INFLUXDB_PASSWORD)
-    client.create_database(INFLUXDB_DATABASE)
+    #Requires admin user privilage
+    #client.create_database(INFLUXDB_DATABASE)
     client.switch_database(INFLUXDB_DATABASE)
 except InfluxDBClientError as err:
     print("InfluxDB connection failed: %s" % (err))
@@ -293,7 +340,7 @@ if not FITBIT_ACCESS_TOKEN:
     json = response.json()
     FITBIT_ACCESS_TOKEN = json['access_token']
     refresh_token = json['refresh_token']
-    f = open('C:/Users/Arpan Ghosh/.fitbit-refreshtoken', "w+")
+    f = open('C:/Users/Arpan Ghosh/.fitbit-refreshtoken', "r+")
     f.write(refresh_token)
     f.close()
 
@@ -445,6 +492,7 @@ for day_date in day_list:
 
     try:
         client.write_points(points)
+        
     except InfluxDBClientError as err:
         print("Unable to write points to InfluxDB: %s" % (err))
         sys.exit()
@@ -454,6 +502,6 @@ for day_date in day_list:
     print("\n=============================== O ===============================\n")
 
     iteration_count += 1
-    if iteration_count % 8 == 0:
+    if iteration_count % 7 == 0:
         print("\n--------------Assuming API limit reached : Pausing script for an hour-----------------\n")
         time.sleep(3660)
