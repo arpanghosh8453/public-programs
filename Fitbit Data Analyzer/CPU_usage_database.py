@@ -29,7 +29,7 @@ last_input = GetLastInputInfo()
 
 update_count = 0
 
-process=subprocess.Popen(["powershell","Get-WinEvent -FilterHashtable @{Logname='System';ID=6005} | Select-Object TimeCreated | Sort-Object -Property TimeCreated | foreach {($_.TimeCreated.ToString('s'))}"],stdout=subprocess.PIPE)
+process=subprocess.Popen(["powershell","Get-WinEvent -FilterHashtable @{Logname='System';ID=6006} | Select-Object TimeCreated | Sort-Object -Property TimeCreated | foreach {($_.TimeCreated.ToString('s'))}"],stdout=subprocess.PIPE)
 result=process.communicate()[0].decode('utf-8').replace('\r','').split('\n')[-2]
 shutdown_datetime = datetime.fromisoformat(result)
 
