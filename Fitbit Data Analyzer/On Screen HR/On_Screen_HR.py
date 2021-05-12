@@ -11,7 +11,10 @@ FITBIT_LANGUAGE = 'en_US'
 f = open('C:/Users/Arpan Ghosh/fitbit_access_token.txt', 'r')
 FITBIT_ACCESS_TOKEN = f.read()
 f.close()
+
 STEPS_GOAL = 8000
+ACTIVITY_PERCENTAGE_GOAL = 80
+
 DEFAULT_STYLE = """
 QProgressBar{
     min-height: 6px;
@@ -42,8 +45,8 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("HR Monitor")
-        self.setWindowOpacity(0.7)
-        self.move(0,915)
+        self.setWindowOpacity(0.6)
+        self.move(0,880)
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.setWindowFlags(Qt.Window|Qt.X11BypassWindowManagerHint|Qt.WindowStaysOnTopHint|Qt.FramelessWindowHint|Qt.ToolTip)
         self.setAttribute(Qt.WA_NoSystemBackground)
@@ -60,7 +63,9 @@ class Window(QWidget):
         self.styling_icon_high = qta.icon('fa5s.heart-broken',color='#fb697c')
         self.styling_icon_missing = qta.icon('mdi.heart-off', color='#8fc9f8')
         self.styling_shoe = qta.icon('mdi.shoe-print', color='white')
+        self.styling_running = qta.icon('fa5s.running', color='white')
         self.styling_green_shoe = qta.icon('mdi.shoe-print', color='#61f5a3')
+        self.styling_green_running = qta.icon('fa5s.running', color='#61f5a3')
         self.Low_hr_button = QPushButton(self.styling_icon_low, "LHR")
         self.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
         self.Low_hr_button.setFont(myfont)
@@ -74,9 +79,16 @@ class Window(QWidget):
         self.steps_button.setStyleSheet('QPushButton {background-color: black; color: white;}')
         self.steps_button.setFont(myfont)
         self.step_progressbar = QProgressBar(minimum=0, maximum=100)
-        self.step_progressbar.setValue(0)
         self.step_progressbar.setTextVisible(False)
         self.step_progressbar.setStyleSheet(DEFAULT_STYLE)
+        self.activity_button = QPushButton(self.styling_running, "Acts")
+        self.activity_button.setStyleSheet('QPushButton {background-color: black; color: white;}')
+        self.activity_button.setFont(myfont)
+        self.activity_progressbar = QProgressBar(minimum=1, maximum=100)
+        self.activity_progressbar.setTextVisible(False)
+        self.activity_progressbar.setStyleSheet(DEFAULT_STYLE)
+        self.step_progressbar.setValue(0)
+        self.activity_progressbar.setValue(0)
         self.last_update_label = QLabel("                         Last Update Time : -- : -- : -- ")
         self.last_update_label.setStyleSheet('QLabel {background-color: black; color: #f3f980; text-align:center;}')
         self.last_update_label.setFont(small_font)
@@ -87,7 +99,9 @@ class Window(QWidget):
         layout.addWidget(self.High_hr_button, 0, 2)
         layout.addWidget(self.steps_button,1,0)
         layout.addWidget(self.step_progressbar,1,1,1,3)
-        layout.addWidget(self.last_update_label, 2,0,1,3)
+        layout.addWidget(self.activity_button,2,0)
+        layout.addWidget(self.activity_progressbar,2,1,2,3)
+        layout.addWidget(self.last_update_label, 3,0,3,3)
         # Set the layout on the application's window
         self.setLayout(layout)
 
@@ -128,9 +142,34 @@ def fetch_steps(date):
     data = response.json()
     return int(data['activities-steps'][0]['value'])
 
+def fetch_activity_percent(date):
+    try:
+        response = requests.get('https://api.fitbit.com/1/user/-/activities/date/'+date+'.json', 
+            headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
+        response.raise_for_status()
+    except Exception as err:
+        print("\nHTTP request failed: %s \n" % (err))
+
+    data = response.json()
+    sm = data['summary']["sedentaryMinutes"]
+    fam = data['summary']["fairlyActiveMinutes"] 
+    vam = data['summary']["veryActiveMinutes"]
+    lam = data['summary']["lightlyActiveMinutes"]
+
+    total = sm + vam + lam + fam
+    active_total = (vam * 1.8) + (fam * 1.4) + lam
+    activity_percent = round((active_total/total)*100)
+
+    if activity_percent > 100:
+        return 100
+    else:
+        return activity_percent
+    
+
 
 def update():
 
+    #HR Update
     high,avg,low,last_update = fetch_HR(date.today().__str__())
 
     if low < 65:
@@ -185,6 +224,7 @@ def update():
         window.Avg_hr_button.setIcon(window.styling_icon_missing)
         window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #8fc9f8;}')
 
+    # Steps update
     step_count = fetch_steps(date.today().__str__())
     step_percent = round(step_count*100//STEPS_GOAL)
     window.steps_button.setText(" "+str(step_percent)+"%")
@@ -197,6 +237,16 @@ def update():
     else:
         window.step_progressbar.setValue(step_percent)
 
+    # Activity Update
+    activity_percent = fetch_activity_percent(date.today().__str__())
+    window.activity_button.setText(" "+str(activity_percent)+"%")
+    window.activity_progressbar.setValue(activity_percent)
+
+    if activity_percent >= ACTIVITY_PERCENTAGE_GOAL:
+        window.activity_button.setIcon(window.styling_green_running)
+        window.activity_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
+        window.activity_progressbar.setStyleSheet(COMPLETE_STYLE)
+
     print("\nLast Script run :",current_time,"|","Last Update :",last_update)
 
 
@@ -204,7 +254,7 @@ def update():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = Window()
-    keyboard.add_hotkey('ctrl + alt + q', window.close)
+    keyboard.add_hotkey('ctrl + alt + q', app.quit)
     window.show()
     timer = QTimer()
     timer.timeout.connect(update)
