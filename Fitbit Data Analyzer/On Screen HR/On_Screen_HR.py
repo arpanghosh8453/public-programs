@@ -310,7 +310,7 @@ def update():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = Window()
-    keyboard.add_hotkey('ctrl + alt + q', app.quit)
+    keyboard.add_hotkey('ctrl + alt + t', app.quit)
     update()
     window.show()
     timer = QTimer()
