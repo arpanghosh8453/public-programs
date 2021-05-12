@@ -1,4 +1,4 @@
-import requests, sys
+import requests, sys, time
 from datetime import date, datetime
 from PyQt5.QtWidgets import * 
 from PyQt5.QtGui import * 
@@ -115,7 +115,7 @@ def fetch_HR(date):
         response.raise_for_status()
     except Exception as err:
         print("\nHTTP request failed: %s \n" % (err))
-        return (0,0,0,"00:00")
+        return (None,None,None,"Failed",None)
 
     data = response.json()
 
@@ -128,8 +128,15 @@ def fetch_HR(date):
     avg = sum(points[-16:-1])/15
     high = max(points[-16:-1])
     low = min(points[-16:-1])
+    detailed_list = []
 
-    return (high,avg,low,last_update)
+    for i in range(15):
+        detailed_list.append(points_time[-16:-1][i]+" >> "+str(points[-16:-1][i]))
+    detailed_str = "\n".join(detailed_list)
+
+    #detailed = "\n".join(map(str,points[-16:-1]))
+
+    return (high,avg,low,last_update,detailed_str)
 
 def fetch_steps(date):
     try:
@@ -138,6 +145,7 @@ def fetch_steps(date):
         response.raise_for_status()
     except Exception as err:
         print("\nHTTP request failed: %s \n" % (err))
+        return None
 
     data = response.json()
     return int(data['activities-steps'][0]['value'])
@@ -149,6 +157,7 @@ def fetch_activity_percent(date):
         response.raise_for_status()
     except Exception as err:
         print("\nHTTP request failed: %s \n" % (err))
+        return None
 
     data = response.json()
     sm = data['summary']["sedentaryMinutes"]
@@ -165,55 +174,76 @@ def fetch_activity_percent(date):
     else:
         return activity_percent
     
-
+prev_detailed = ""
 
 def update():
 
-    #HR Update
-    high,avg,low,last_update = fetch_HR(date.today().__str__())
-
-    if low < 65:
-        window.Low_hr_button.setIcon(window.styling_icon_low)
-        window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
-    elif low > 80:
-        window.Low_hr_button.setIcon(window.styling_icon_high)
-        window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #fb697c;}')
-    else:
-        window.Low_hr_button.setIcon(window.styling_icon_normal)
-        window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #f3f980;}')
-
-    window.Low_hr_button.setText(str(low))
-
-    if high < 80:
-        window.High_hr_button.setIcon(window.styling_icon_low)
-        window.High_hr_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
-    elif high > 100:
-        window.High_hr_button.setIcon(window.styling_icon_high)
-        window.High_hr_button.setStyleSheet('QPushButton {background-color: black; color: #fb697c;}')
-    else:
-        window.High_hr_button.setIcon(window.styling_icon_normal)
-        window.High_hr_button.setStyleSheet('QPushButton {background-color: black; color: #f3f980;}')
-
-    window.High_hr_button.setText(str(high))
-
-    if avg < 70:
-        window.Avg_hr_button.setIcon(window.styling_icon_low)
-        window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
-    elif avg > 90:
-        window.Avg_hr_button.setIcon(window.styling_icon_high)
-        window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #fb697c;}')
-    else:
-        window.Avg_hr_button.setIcon(window.styling_icon_normal)
-        window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #f3f980;}')
-
-    window.Avg_hr_button.setText(str(round(avg)))
-
-    window.last_update_label.setText("                         Last Update Time : "+last_update)
 
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
+    global prev_detailed
 
-    if (datetime.strptime(current_time , '%H:%M:%S') - datetime.strptime(last_update , '%H:%M:%S')).total_seconds() >= 1800:
+    #HR Update
+    high,avg,low,last_update,detailed_HR = fetch_HR(date.today().__str__())
+
+    if high != None:
+        if low < 65:
+            window.Low_hr_button.setIcon(window.styling_icon_low)
+            window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
+        elif low > 80:
+            window.Low_hr_button.setIcon(window.styling_icon_high)
+            window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #fb697c;}')
+        else:
+            window.Low_hr_button.setIcon(window.styling_icon_normal)
+            window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #f3f980;}')
+
+        window.Low_hr_button.setText(str(low))
+
+        if high < 80:
+            window.High_hr_button.setIcon(window.styling_icon_low)
+            window.High_hr_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
+        elif high > 100:
+            window.High_hr_button.setIcon(window.styling_icon_high)
+            window.High_hr_button.setStyleSheet('QPushButton {background-color: black; color: #fb697c;}')
+        else:
+            window.High_hr_button.setIcon(window.styling_icon_normal)
+            window.High_hr_button.setStyleSheet('QPushButton {background-color: black; color: #f3f980;}')
+
+        window.High_hr_button.setText(str(high))
+
+        if avg < 70:
+            window.Avg_hr_button.setIcon(window.styling_icon_low)
+            window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
+        elif avg > 90:
+            window.Avg_hr_button.setIcon(window.styling_icon_high)
+            window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #fb697c;}')
+        else:
+            window.Avg_hr_button.setIcon(window.styling_icon_normal)
+            window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #f3f980;}')
+
+        window.Avg_hr_button.setText(str(round(avg)))
+
+        window.last_update_label.setText("                         Last Update Time : "+last_update)
+
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+
+        if (datetime.strptime(current_time , '%H:%M:%S') - datetime.strptime(last_update , '%H:%M:%S')).total_seconds() >= 1800:
+            window.Low_hr_button.setText("LHR")
+            window.Low_hr_button.setIcon(window.styling_icon_missing)
+            window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #8fc9f8;}')
+            window.High_hr_button.setText("HHR")
+            window.High_hr_button.setIcon(window.styling_icon_missing)
+            window.High_hr_button.setStyleSheet('QPushButton {background-color: black; color: #8fc9f8;}')
+            window.Avg_hr_button.setText("HR")
+            window.Avg_hr_button.setIcon(window.styling_icon_missing)
+            window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #8fc9f8;}')
+
+    else:
+        print("HR Update failed")
+        window.last_update_label.setText("                         Last Update Time : "+"Update Failed")
+
+    if last_update == "Failed":
         window.Low_hr_button.setText("LHR")
         window.Low_hr_button.setIcon(window.styling_icon_missing)
         window.Low_hr_button.setStyleSheet('QPushButton {background-color: black; color: #8fc9f8;}')
@@ -223,31 +253,57 @@ def update():
         window.Avg_hr_button.setText("HR")
         window.Avg_hr_button.setIcon(window.styling_icon_missing)
         window.Avg_hr_button.setStyleSheet('QPushButton {background-color: black; color: #8fc9f8;}')
+    
 
     # Steps update
     step_count = fetch_steps(date.today().__str__())
-    step_percent = round(step_count*100//STEPS_GOAL)
-    window.steps_button.setText(" "+str(step_percent)+"%")
 
-    if step_count >= STEPS_GOAL:
-        window.step_progressbar.setValue(100)
-        window.steps_button.setIcon(window.styling_green_shoe)
-        window.steps_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
-        window.step_progressbar.setStyleSheet(COMPLETE_STYLE)
+    if step_count != None:
+        step_percent = round(step_count*100//STEPS_GOAL)
+        window.steps_button.setText(" "+str(step_percent)+"%")
+
+        if step_count >= STEPS_GOAL:
+            window.step_progressbar.setValue(100)
+            window.steps_button.setIcon(window.styling_green_shoe)
+            window.steps_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
+            window.step_progressbar.setStyleSheet(COMPLETE_STYLE)
+        else:
+            window.step_progressbar.setValue(step_percent)
     else:
-        window.step_progressbar.setValue(step_percent)
+        print("Steps update failed")
+        window.last_update_label.setText("                         Last Update Time : "+"Update Failed")
 
     # Activity Update
     activity_percent = fetch_activity_percent(date.today().__str__())
-    window.activity_button.setText(" "+str(activity_percent)+"%")
-    window.activity_progressbar.setValue(activity_percent)
+    if activity_percent != None:
+        window.activity_button.setText(" "+str(activity_percent)+"%")
+        window.activity_progressbar.setValue(activity_percent)
 
-    if activity_percent >= ACTIVITY_PERCENTAGE_GOAL:
-        window.activity_button.setIcon(window.styling_green_running)
-        window.activity_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
-        window.activity_progressbar.setStyleSheet(COMPLETE_STYLE)
+        if activity_percent >= ACTIVITY_PERCENTAGE_GOAL:
+            window.activity_button.setIcon(window.styling_green_running)
+            window.activity_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
+            window.activity_progressbar.setStyleSheet(COMPLETE_STYLE)
+    else:
+        print("Activity update failed")
+        window.last_update_label.setText("                         Last Update Time : "+"Update Failed")
+
 
     print("\nLast Script run :",current_time,"|","Last Update :",last_update)
+
+    #Alert message
+    if high != None:
+        if prev_detailed != detailed_HR:
+            if (low > 80 and high > 110) and avg > 95:
+                msg = QMessageBox()
+                msg.setWindowTitle("HR Alert")
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText("High Heart Rate")
+                msg.setStandardButtons(QMessageBox.Ignore)
+                msg.setDetailedText(detailed_HR)
+                x = msg.exec_()
+
+            prev_detailed = detailed_HR
+
 
 
 
@@ -255,6 +311,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = Window()
     keyboard.add_hotkey('ctrl + alt + q', app.quit)
+    update()
     window.show()
     timer = QTimer()
     timer.timeout.connect(update)
