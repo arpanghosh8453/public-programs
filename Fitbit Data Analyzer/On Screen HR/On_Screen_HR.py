@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import * 
 from PyQt5.QtCore import * 
 import qtawesome as qta
+from win10toast import ToastNotifier
 import keyboard
 
 
@@ -298,6 +299,7 @@ def update():
     print("\nLast Script run :",current_time,"|","Last Update :",last_update)
 
     #Alert message
+    '''
     if high != None:
         if prev_detailed != detailed_HR:
             if (low > 80 and high > 110) and avg > 95:
@@ -311,8 +313,13 @@ def update():
                 x = msg.exec_()
 
             prev_detailed = detailed_HR
-
-
+    '''
+    if high != None:
+        if prev_detailed != detailed_HR:
+            if (low > 80 and high > 110) and avg > 95:
+                toast = ToastNotifier()
+                toast.show_toast("HR Alert","High Heart Rate detected",duration=8,icon_path=r"D:\docker_volumes\On Screen HR\heart.ico", threaded = True)
+            prev_detailed = detailed_HR
 
 
 if __name__ == "__main__":
