@@ -13,7 +13,8 @@ FITBIT_ACCESS_TOKEN = f.read()
 f.close()
 
 STEPS_GOAL = 8000
-ACTIVITY_PERCENTAGE_GOAL = 80
+STEPS_FULL = 10000
+ACTIVITY_PERCENTAGE_GOAL = 50
 
 DEFAULT_STYLE = """
 QProgressBar{
@@ -33,7 +34,7 @@ QProgressBar{
     min-height: 6px;
     max-height: 6px;
     border-radius: 4px;
-}
+}ṭ
 
 QProgressBar::chunk {
     border-radius: 6px;
@@ -223,10 +224,9 @@ def update():
 
         window.Avg_hr_button.setText(str(round(avg)))
 
-        window.last_update_label.setText("                         Last Update Time : "+last_update)
+        update_delay_mins = round((datetime.strptime(current_time , '%H:%M:%S') - datetime.strptime(last_update , '%H:%M:%S')).total_seconds()/60)
 
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
+        window.last_update_label.setText("       Last Update Time : "+last_update+"    |   "+str(update_delay_mins)+" minutes ago")
 
         if (datetime.strptime(current_time , '%H:%M:%S') - datetime.strptime(last_update , '%H:%M:%S')).total_seconds() >= 1800:
             window.Low_hr_button.setText("LHR")
@@ -259,11 +259,14 @@ def update():
     step_count = fetch_steps(date.today().__str__())
 
     if step_count != None:
-        step_percent = round(step_count*100//STEPS_GOAL)
+        step_percent = round(step_count*100//STEPS_FULL)
         window.steps_button.setText(" "+str(step_percent)+"%")
 
         if step_count >= STEPS_GOAL:
-            window.step_progressbar.setValue(100)
+            if step_percent > 100:
+                window.step_progressbar.setValue(100)
+            else:
+                window.step_progressbar.setValue(step_percent)
             window.steps_button.setIcon(window.styling_green_shoe)
             window.steps_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
             window.step_progressbar.setStyleSheet(COMPLETE_STYLE)
@@ -283,6 +286,10 @@ def update():
             window.activity_button.setIcon(window.styling_green_running)
             window.activity_button.setStyleSheet('QPushButton {background-color: black; color: #61f5a3;}')
             window.activity_progressbar.setStyleSheet(COMPLETE_STYLE)
+        else:
+            window.activity_button.setIcon(window.styling_running)
+            window.activity_button.setStyleSheet('QPushButton {background-color: black; color: white;}')
+            window.activity_progressbar.setStyleSheet(DEFAULT_STYLE)
     else:
         print("Activity update failed")
         window.last_update_label.setText("                         Last Update Time : "+"Update Failed")
@@ -294,6 +301,7 @@ def update():
     if high != None:
         if prev_detailed != detailed_HR:
             if (low > 80 and high > 110) and avg > 95:
+            #if (low > 65 and high > 90) and avg > 72:
                 msg = QMessageBox()
                 msg.setWindowTitle("HR Alert")
                 msg.setIcon(QMessageBox.Warning)
@@ -310,7 +318,8 @@ def update():
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = Window()
-    keyboard.add_hotkey('ctrl + alt + t', app.quit)
+    keyboard.add_hotkey('alt + t', app.quit)
+    #keyboard.add_hotkey('alt + u', update)
     update()
     window.show()
     timer = QTimer()
