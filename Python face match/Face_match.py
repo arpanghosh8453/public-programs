@@ -11,7 +11,7 @@ camera_fail = 0
 
 while True:
 
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(2) # make sure this is the right index for your camera. 
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
     return_value, frame = cap.read()
@@ -59,6 +59,7 @@ while True:
     
     time.sleep(10)
     
+# Use this snippet to find out available camera indexes. 
 '''
 import cv2
 import numpy as np
