@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import requests, sys, os, pytz, time
 from datetime import datetime, date, timedelta
 from influxdb import InfluxDBClient
@@ -10,17 +11,17 @@ LOCAL_TIMEZONE = pytz.timezone('Asia/Calcutta')
 FITBIT_LANGUAGE = 'en_US'
 FITBIT_CLIENT_ID = ''
 FITBIT_CLIENT_SECRET = ''
-FITBIT_ACCESS_TOKEN = ''
+FITBIT_ACCESS_TOKEN = 'YOUR ACCESS TOKEN HERE'
 FITBIT_INITIAL_CODE = ''
 REDIRECT_URI = 'http://localhost/8080'
 INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086
-INFLUXDB_USERNAME = 'database_username'
-INFLUXDB_PASSWORD = 'database_password'
+INFLUXDB_USERNAME = 'INFLUXDB_USERNAME_HERE'
+INFLUXDB_PASSWORD = 'INFLUXDB_PASSWORD_HERE'
 INFLUXDB_DATABASE = 'fitbit'
 points = []
 
-filehandle = open("D:/docker_volumes/database_update_log.txt", "a")
+filehandle = open("C:/Users/<YOUR USERNAME HERE>/.database_update_log", "a")
 
 filehandle.write("\n\n########################  Script start time : " + str(datetime.now()) + "  ############################\n\n")
 print("\n\n########################  Script start time : " + str(datetime.now()) + "  ############################\n\n")
@@ -49,6 +50,57 @@ def fetch_data(category, type, date_var):
                     "value": float(day['value'])
                 }
             })
+            
+def fetch_data_spo2(measurement_type, date_var):
+    try:
+        response = requests.get('https://api.fitbit.com/1/user/-/' + measurement_type + '/date/'+date_var+'.json', 
+            headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        filehandle.write("\nHTTP request failed: %s \n" % (err))
+        print("\nHTTP request failed: %s \n" % (err))
+        sys.exit()
+    try:
+        data = response.json()
+        filehandle.write("\nGot " + measurement_type + " for "+ date_var +" from Fitbit\n")
+        print("\nGot " + measurement_type + " for "+ date_var +" from Fitbit\n")
+    
+        points.append({
+                "measurement": measurement_type,
+                "time": LOCAL_TIMEZONE.localize(datetime.fromisoformat(data['dateTime'])).astimezone(pytz.utc).isoformat(),
+                "fields": {
+                    "max": float(data['value']['max']), "min": float(data['value']['min']), "avg": float(data['value']['avg'])
+                }
+            })
+    except KeyError as err:
+        filehandle.write("Unable to fetch Spo2 data to the given date - KeyError: 'dateTime'")
+        
+def fetch_data_br(measurement_type, date_var):
+    try:
+        response = requests.get('https://api.fitbit.com/1/user/-/' + measurement_type + '/date/'+date_var+'.json', 
+            headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        filehandle.write("\nHTTP request failed: %s \n" % (err))
+        print("\nHTTP request failed: %s \n" % (err))
+        sys.exit()
+
+    try:
+        data = response.json()['br'][0]
+        filehandle.write("\nGot " + measurement_type + " for "+ date_var +" from Fitbit\n")
+        print("\nGot " + measurement_type + " for "+ date_var +" from Fitbit\n")
+    
+        points.append({
+                "measurement": measurement_type,
+                "time": LOCAL_TIMEZONE.localize(datetime.fromisoformat(data['dateTime'])).astimezone(pytz.utc).isoformat(),
+                "fields": {
+                    "value": float(data['value']['breathingRate'])
+                }
+            })
+    except KeyError as err:
+        filehandle.write("Unable to fetch Breathing Rate data to the given date - KeyError: 'dateTime'")
+    except IndexError as err:
+        filehandle.write("Unable to fetch Breathing Rate data to the given date - IndexError: list index out of range")
 
 def fetch_hourly_steps(date):
     try:
@@ -319,8 +371,8 @@ except InfluxDBClientError as err:
     sys.exit()
 
 if not FITBIT_ACCESS_TOKEN:
-    if os.path.isfile('C:/Users/Arpan Ghosh/.fitbit-refreshtoken'):
-        f = open('C:/Users/Arpan Ghosh/.fitbit-refreshtoken', "r")
+    if os.path.isfile('C:/Users/<USERNAME>/.fitbit-refreshtoken'):
+        f = open('C:/Users/<USERNAME>/.fitbit-refreshtoken', "r")
         token = f.read()
         f.close()
         response = requests.post('https://api.fitbit.com/oauth2/token',
@@ -344,7 +396,7 @@ if not FITBIT_ACCESS_TOKEN:
     json = response.json()
     FITBIT_ACCESS_TOKEN = json['access_token']
     refresh_token = json['refresh_token']
-    f = open('C:/Users/Arpan Ghosh/.fitbit-refreshtoken', "r+")
+    f = open('C:/Users/<USERNAME>/.fitbit-refreshtoken', "r+")
     f.write(refresh_token)
     f.close()
 
@@ -467,6 +519,8 @@ previous_date = (date.today() - timedelta(days=1)).isoformat()
 next_date = (date.today() + timedelta(days=1)).isoformat()
 
 #Previous day logging
+fetch_data_spo2('spo2',previous_date)
+fetch_data_br('br',previous_date)
 fetch_data('activities', 'steps', previous_date )
 fetch_data('activities', 'distance', previous_date)
 fetch_data('activities', 'floors', previous_date)
@@ -490,6 +544,8 @@ fetch_activities(same_date) #Special one requires same date for previous day one
 print("\n----------------------------Previous day logging done-------------------------------\n")
 
 #Same day logging
+fetch_data_spo2('spo2',same_date)
+fetch_data_br('br',same_date)
 fetch_data('activities', 'steps', same_date )
 fetch_data('activities', 'distance', same_date)
 fetch_data('activities', 'floors', same_date)
