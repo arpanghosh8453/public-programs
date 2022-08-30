@@ -1,0 +1,15 @@
+docker run -d --restart=unless-stopped -p 7384:3001 -v /home/arpan/docker-containers/uptime-kuma:/app/data --name uptime-kuma louislam/uptime-kuma:1
+
+docker run -d --restart unless-stopped --name filebrowser -v /home/arpan:/srv -v /home/arpan/docker-containers/filebrowser/filebrowser.db:/database/filebrowser.db -e PUID=$(id -u) -e PGID=$(id -g) -p 8080:80 filebrow/filebrowser:s6
+
+docker run -d --restart unless-stopped -it --name code-server -p 8123:8080 -v /home/arpan/docker-containers/code-server:/home/coder/.config -v /home/arpan:/home/coder/project -u "$(id -u):$(id -g)" -e "DOCKER_USER=$USER" codercom/code-server:latest
+
+docker run -d -p 9000:9000 --name=portainer --restart=unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v /home/arpan/docker-containers/portainer:/data portainer/portainer-ce:latest
+
+docker run --name logger-dozzle --detach --volume=/var/run/docker.sock:/var/run/docker.sock -p 8083:8080 amir20/dozzle:latest
+
+docker run -d --restart unless-stopped --volume /home/arpan/docker-containers/grafana:/var/lib/grafana -p 3000:3000 --name grafana grafana/grafana:latest
+
+docker run -d --restart unless-stopped --volume /home/arpan/docker-containers/navidrome:/data --volume /home/arpan/DATA:/music:ro -p 4533:4533 --name navidrome deluan/navidrome:latest
+
+docker run -d --restart unless-stopped --name influxdb -p 8086:8086 --volume /home/arpan/docker-containers/influxdb:/var/lib/influxdb --volume /home/arpan/docker-containers/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf influxdb:1.8
