@@ -95,3 +95,5 @@
 -   [Httpie](https://github.com/httpie/httpie) : User friendly interaction with HTTP servers and APIs from the terminal
     
 -   [Fd](https://github.com/sharkdp/fd) : Uset friendly alternative to find command
+
+-   [Thefuck](https://github.com/nvbn/thefuck) : corrects errors in previous console commands with [zsh plugin](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/thefuck/README.md)
