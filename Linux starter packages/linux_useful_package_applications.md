@@ -1,9 +1,9 @@
-﻿-   Linux distro tryout: [https://www.onworks.net/](https://www.onworks.net/)
+﻿-   **Linux distro tryout**: [https://www.onworks.net/](https://www.onworks.net/)
     
 
   
 
--   Useful Packages: [links collection](https://github.com/rothgar/awesome-tuis)
+-   **Useful Packages**: [links collection](https://github.com/rothgar/awesome-tuis) and [sorted list](https://github.com/ibraheemdev/modern-unix)
     
 
   
@@ -30,7 +30,7 @@
     
 -   [Ripgrep](https://github.com/BurntSushi/ripgrep): more efficient than grep [apt]
     
--   [Ncdu](https://github.com/rofl0r/ncdu) or [dua](https://github.com/Byron/dua-cli/releases) : disk usage utility ( du ) | dua is better than ncdu
+-   [Ncdu](https://github.com/rofl0r/ncdu) or [dua](https://github.com/Byron/dua-cli/releases) or [Dust](https://github.com/bootandy/dust) : disk usage utility | dua is better than ncdu | Dust is the BEST one
     
 -   Rsync: copy and sync files utility
     
@@ -91,3 +91,7 @@
 -   [Pdd](https://github.com/jarun/pdd) : Easy date and time difference calculator
     
 -   [Qalc](https://installati.one/ubuntu/21.04/qalc/) : Easy unit conversions and mathematical operations on terminal [apt]
+    
+-   [Httpie](https://github.com/httpie/httpie) : User friendly interaction with HTTP servers and APIs from the terminal
+    
+-   [Fd](https://github.com/sharkdp/fd) : Uset friendly alternative to find command
