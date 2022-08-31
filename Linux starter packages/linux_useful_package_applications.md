@@ -15,19 +15,37 @@
 
 -   [Zsh](https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH) : Better version of bash shell
     
--   [Oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) : zsh plugin manager >>> ```sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"```
+-   [Oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) : zsh plugin manager
+```bash
+sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
     
--   [Powerlevel10k](https://github.com/romkatv/powerlevel10k) : Awesome zsh prompt theme >>>  ```git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k```
+-   [Powerlevel10k](https://github.com/romkatv/powerlevel10k) : Awesome zsh prompt theme
+```bash
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+```
     
--   [Zsh-z](https://github.com/agkozak/zsh-z) : directory jumping >>>  ```git clone https://github.com/agkozak/zsh-z ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-z```
+-   [Zsh-z](https://github.com/agkozak/zsh-z) : directory jumping
+```bash
+git clone https://github.com/agkozak/zsh-z ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-z
+```
     
--   [Zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) : ```git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting```
+-   [Zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) : 
+```bash
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
     
--   [Zsh-autocomplete](https://github.com/marlonrichert/zsh-autocomplete) : ```git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete```
+-   [Zsh-autocomplete](https://github.com/marlonrichert/zsh-autocomplete) : 
+```bash
+git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete
+```
     
 -   [Neovim](https://github.com/neovim/neovim) : Best CLI Text editor [apt]
     
--   [vim-plug](https://github.com/junegunn/vim-plug) : neovim plugin panager >>>  ```sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'```
+-   [vim-plug](https://github.com/junegunn/vim-plug) : neovim plugin panager
+```bash
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+```
     
 -   [Tailscale](https://tailscale.com/download/linux/rpi): For Tailnet connection among self devices over the internet
     
