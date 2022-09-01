@@ -1,4 +1,6 @@
-﻿-   **Linux distro tryout**: [https://www.onworks.net/](https://www.onworks.net/)
+﻿## Sources
+
+-   **Linux distro tryout**: [https://www.onworks.net/](https://www.onworks.net/)
     
 
   
@@ -8,10 +10,9 @@
 
   
 
-**-   Essential**
+##  Essential
     
 
-  
 
 -   [Zsh](https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH) : Better version of bash shell
     
@@ -46,7 +47,14 @@ git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git ${Z
 ```bash
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 ```
-    
+-   [Docker](https://docs.docker.com/get-docker/) : Running services within containers
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+-   [Docker-compose](https://docs.docker.com/compose/) : Running docker with yaml files
+```bash
+sudo apt-get remove docker-compose; VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*\d') && DESTINATION=/usr/local/bin/docker-compose && sudo curl -L https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $DESTINATION && sudo chmod 755 $DESTINATION
+```
 -   [Tailscale](https://tailscale.com/download/linux/rpi): For Tailnet connection among self devices over the internet
     
 -   [Bat](https://github.com/sharkdp/bat): Better cat functionality
@@ -78,11 +86,24 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 -   [Fd](https://github.com/sharkdp/fd) : Uset friendly alternative to find command
     
 -   [Thefuck](https://github.com/nvbn/thefuck) : corrects errors in previous console commands with [zsh plugin](https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/thefuck/README.md)
+
+-   [Lnav](https://github.com/tstack/lnav) : Log file navigator
+    
+-   [Lazydocker](https://github.com/jesseduffield/lazydocker)  : Docker container TUI
+    
+-   [Ctop](https://github.com/bcicen/ctop) : top like interface for docker containers
+    
+-   [Lazygit](https://github.com/jesseduffield/lazygit) : Git TUI
+
+-   [Speedtest](https://www.speedtest.net/apps/cli) : Internet speed testing CLI
+```bash
+sudo apt-get remove speedtest-cli ; curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash && sudo apt-get update && sudo apt-get install speedtest
+```
     
 
   
 
-**-   Optional**
+## Optional
     
 
   
@@ -142,3 +163,5 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 -   [Qalc](https://installati.one/ubuntu/21.04/qalc/) : Easy unit conversions and mathematical operations on terminal [apt]
     
 -   [Httpie](https://github.com/httpie/httpie) : [User friendly interaction](https://httpie.io/docs/cli/examples) with HTTP servers and APIs from the terminal
+
+-   [Gping](https://github.com/orf/gping) : ping with a graph TUI
