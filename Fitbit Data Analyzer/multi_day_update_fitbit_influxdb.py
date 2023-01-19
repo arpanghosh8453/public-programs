@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import requests, sys, os, pytz, time
+import requests, sys, os, pytz, time, tqdm
+from time import sleep
 from datetime import datetime, date, timedelta
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
@@ -26,7 +27,7 @@ filehandle = open("/home/arpan/.database_update_log", "a")
 filehandle.write("\n\n########################  Script start time : " + str(datetime.now()) + "  ############################\n\n")
 print("\n\n########################  Script start time : " + str(datetime.now()) + "  ############################\n\n")
 
-print("\nWorking : Writting log to /home/arpan/.database_update_log\n")
+print("\nWorking : Writing log to /home/arpan/.database_update_log\n")
 
 def fetch_data(category, type, date_var):
     try:
@@ -400,171 +401,125 @@ if not FITBIT_ACCESS_TOKEN:
     f.write(refresh_token)
     f.close()
 
-try:
-    response = requests.get('https://api.fitbit.com/1/user/-/devices.json', 
-        headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
-    response.raise_for_status()
-except requests.exceptions.HTTPError as err:
-    filehandle.write("\nHTTP request failed: %s \n" % (err))
-    print("\nHTTP request failed: %s \n" % (err))
-    sys.exit()
 
-data = response.json()
 
-filehandle.write("\nGot devices from Fitbit for current datetime "+str(datetime.today())+"\n")
-print("\nGot devices from Fitbit for current datetime "+str(datetime.today())+"\n")
+for day_gap in range(28,50):
 
-for device in data:
-    points.append({
-        "measurement": "deviceBatteryLevel",
-        "time": LOCAL_TIMEZONE.localize(datetime.fromisoformat(device['lastSyncTime'])).astimezone(pytz.utc).isoformat(),
-        "tags": {
-            "id": device['id'],
-            "deviceVersion": device['deviceVersion'],
-            "type": device['type'],
-            "mac": device['mac'],
-        },
-        "fields": {
-            "value": float(device['batteryLevel'])
-        }
-    })
+    previous_date = (date.today() - timedelta(days=day_gap+1)).isoformat()
+    same_date = (date.today() - timedelta(days=day_gap)).isoformat()
 
-end = date.today()
-start = end - timedelta(days=1)
+    end = date.today() - timedelta(days=day_gap)
+    start = date.today() - timedelta(days=day_gap+1)
 
-try:
-    response = requests.get('https://api.fitbit.com/1.2/user/-/sleep/date/' + start.isoformat() + '/' + end.isoformat() + '.json',
-        headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
-    response.raise_for_status()
-except requests.exceptions.HTTPError as err:
-    filehandle.write("\nHTTP request failed: %s \n" % (err))
-    print("\nHTTP request failed: %s \n" % (err))
-    sys.exit()
+    try:
+        response = requests.get('https://api.fitbit.com/1.2/user/-/sleep/date/' + start.isoformat() + '/' + end.isoformat() + '.json',
+            headers={'Authorization': 'Bearer ' + FITBIT_ACCESS_TOKEN, 'Accept-Language': FITBIT_LANGUAGE})
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        filehandle.write("\nHTTP request failed: %s \n" % (err))
+        print("\nHTTP request failed: %s \n" % (err))
+        sys.exit()
 
-data = response.json()
-filehandle.write("\nGot sleep sessions from Fitbit\n")
-print("\nGot sleep sessions from Fitbit\n")
+    data = response.json()
+    filehandle.write("\nGot sleep sessions from Fitbit\n")
+    print("\nGot sleep sessions from Fitbit\n")
 
-for day in data['sleep']:
-    time = datetime.fromisoformat(day['startTime'])
-    utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
-    if day['type'] == 'stages':
+    for day in data['sleep']:
+        time = datetime.fromisoformat(day['startTime'])
+        utc_time = LOCAL_TIMEZONE.localize(time).astimezone(pytz.utc).isoformat()
+        if day['type'] == 'stages':
+            points.append({
+                "measurement": "sleep",
+                "time": utc_time,
+                "fields": {
+                    "duration": int(day['duration']),
+                    "efficiency": int(day['efficiency']),
+                    "is_main_sleep": bool(day['isMainSleep']),
+                    "minutes_asleep": int(day['minutesAsleep']),
+                    "minutes_awake": int(day['minutesAwake']),
+                    "time_in_bed": int(day['timeInBed']),
+                    "minutes_deep": int(day['levels']['summary']['deep']['minutes']),
+                    "minutes_light": int(day['levels']['summary']['light']['minutes']),
+                    "minutes_rem": int(day['levels']['summary']['rem']['minutes']),
+                    "minutes_wake": int(day['levels']['summary']['wake']['minutes']),
+                }
+            })
+        else:
+            points.append({
+                "measurement": "sleep",
+                "time": utc_time,
+                "fields": {
+                    "duration": int(day['duration']),
+                    "efficiency": int(day['efficiency']),
+                    "is_main_sleep": bool(day['isMainSleep']),
+                    "minutes_asleep": int(day['minutesAsleep']),
+                    "minutes_awake": int(day['minutesAwake']),
+                    "time_in_bed": int(day['timeInBed']),
+                    "minutes_deep": 0,
+                    "minutes_light": int(day['levels']['summary']['asleep']['minutes']),
+                    "minutes_rem": int(day['levels']['summary']['restless']['minutes']),
+                    "minutes_wake": int(day['levels']['summary']['awake']['minutes']),
+                }
+            })
+        
+        longdata = []
+        shortdata = []
+        if 'data' in day['levels']:
+            longdata = day['levels']['data']
+            for entry in longdata:
+                dtobj = datetime.strptime(entry["dateTime"], "%Y-%m-%dT%H:%M:%S.%f")
+                entry["dateTime_obj"] = dtobj
+                entry["short"] = False
+        
+        if 'shortData' in day['levels']:
+            shortdata = day['levels']['shortData']
+            for entry in shortdata:
+                dtobj = datetime.strptime(entry["dateTime"], "%Y-%m-%dT%H:%M:%S.%f")
+                entry["dateTime_obj"] = dtobj
+                entry["short"] = True
+        
+        process_levels(longdata + shortdata)
+
+        sleep_end_time = LOCAL_TIMEZONE.localize(datetime.fromisoformat(day['endTime'])).astimezone(pytz.utc).isoformat()
+
         points.append({
-            "measurement": "sleep",
-            "time": utc_time,
-            "fields": {
-                "duration": int(day['duration']),
-                "efficiency": int(day['efficiency']),
-                "is_main_sleep": bool(day['isMainSleep']),
-                "minutes_asleep": int(day['minutesAsleep']),
-                "minutes_awake": int(day['minutesAwake']),
-                "time_in_bed": int(day['timeInBed']),
-                "minutes_deep": int(day['levels']['summary']['deep']['minutes']),
-                "minutes_light": int(day['levels']['summary']['light']['minutes']),
-                "minutes_rem": int(day['levels']['summary']['rem']['minutes']),
-                "minutes_wake": int(day['levels']['summary']['wake']['minutes']),
-            }
-        })
-    else:
-        points.append({
-            "measurement": "sleep",
-            "time": utc_time,
-            "fields": {
-                "duration": int(day['duration']),
-                "efficiency": int(day['efficiency']),
-                "is_main_sleep": bool(day['isMainSleep']),
-                "minutes_asleep": int(day['minutesAsleep']),
-                "minutes_awake": int(day['minutesAwake']),
-                "time_in_bed": int(day['timeInBed']),
-                "minutes_deep": 0,
-                "minutes_light": int(day['levels']['summary']['asleep']['minutes']),
-                "minutes_rem": int(day['levels']['summary']['restless']['minutes']),
-                "minutes_wake": int(day['levels']['summary']['awake']['minutes']),
-            }
-        })
-    
-    longdata = []
-    shortdata = []
-    if 'data' in day['levels']:
-        longdata = day['levels']['data']
-        for entry in longdata:
-            dtobj = datetime.strptime(entry["dateTime"], "%Y-%m-%dT%H:%M:%S.%f")
-            entry["dateTime_obj"] = dtobj
-            entry["short"] = False
-    
-    if 'shortData' in day['levels']:
-        shortdata = day['levels']['shortData']
-        for entry in shortdata:
-            dtobj = datetime.strptime(entry["dateTime"], "%Y-%m-%dT%H:%M:%S.%f")
-            entry["dateTime_obj"] = dtobj
-            entry["short"] = True
-    
-    process_levels(longdata + shortdata)
-
-    sleep_end_time = LOCAL_TIMEZONE.localize(datetime.fromisoformat(day['endTime'])).astimezone(pytz.utc).isoformat()
-
-    points.append({
-            "measurement": "sleep_levels",
-            "time": sleep_end_time,
-            "fields": {
-                "seconds": 1800,
-                "sleep_type": "wake",
-                "short" : False
-            }
-        })
+                "measurement": "sleep_levels",
+                "time": sleep_end_time,
+                "fields": {
+                    "seconds": 1800,
+                    "sleep_type": "wake",
+                    "short" : False
+                }
+            })
 
 
-same_date = (date.today()).isoformat()
-previous_date = (date.today() - timedelta(days=1)).isoformat()
-next_date = (date.today() + timedelta(days=1)).isoformat()
+    #Previous day logging
+    fetch_data_spo2('spo2',previous_date)
+    fetch_data_br('br',previous_date)
+    fetch_data('activities', 'steps', previous_date )
+    fetch_data('activities', 'distance', previous_date)
+    fetch_data('activities', 'floors', previous_date)
+    fetch_data('activities', 'elevation', previous_date)
+    fetch_data('activities', 'distance', previous_date)
+    fetch_data('activities', 'minutesSedentary', previous_date)
+    fetch_data('activities', 'minutesLightlyActive', previous_date)
+    fetch_data('activities', 'minutesFairlyActive', previous_date)
+    fetch_data('activities', 'minutesVeryActive', previous_date)
+    fetch_data('activities', 'calories', previous_date)
+    fetch_data('activities', 'activityCalories', previous_date)
+    fetch_heartrate(previous_date)
+    fetch_hourly_steps(previous_date)
+    fetch_activities(same_date) #Special one requires same date for previous day one as the argument is afterdate
 
-#Previous day logging
-fetch_data_spo2('spo2',previous_date)
-fetch_data_br('br',previous_date)
-fetch_data('activities', 'steps', previous_date )
-fetch_data('activities', 'distance', previous_date)
-fetch_data('activities', 'floors', previous_date)
-fetch_data('activities', 'elevation', previous_date)
-fetch_data('activities', 'distance', previous_date)
-fetch_data('activities', 'minutesSedentary', previous_date)
-fetch_data('activities', 'minutesLightlyActive', previous_date)
-fetch_data('activities', 'minutesFairlyActive', previous_date)
-fetch_data('activities', 'minutesVeryActive', previous_date)
-fetch_data('activities', 'calories', previous_date)
-fetch_data('activities', 'activityCalories', previous_date)
-fetch_heartrate(previous_date)
-fetch_hourly_steps(previous_date)
-fetch_activities(same_date) #Special one requires same date for previous day one as the argument is afterdate
+    try:
+        client.write_points(points)
+    except InfluxDBClientError as err:
+        filehandle.write("\nUnable to write points to InfluxDB: %s \n" % (err))
+        print("\nUnable to write points to InfluxDB: %s \n" % (err))
 
-print("\n----------------------------Previous day logging done-------------------------------\n")
+    print("Done for day gap : ", day_gap, " and waiting....\n")
 
-#Same day logging
-fetch_data_spo2('spo2',same_date)
-fetch_data_br('br',same_date)
-fetch_data('activities', 'steps', same_date )
-fetch_data('activities', 'distance', same_date)
-fetch_data('activities', 'floors', same_date)
-fetch_data('activities', 'elevation', same_date)
-fetch_data('activities', 'distance', same_date)
-fetch_data('activities', 'minutesSedentary', same_date)
-fetch_data('activities', 'minutesLightlyActive', same_date)
-fetch_data('activities', 'minutesFairlyActive', same_date)
-fetch_data('activities', 'minutesVeryActive', same_date)
-fetch_data('activities', 'calories', same_date)
-fetch_data('activities', 'activityCalories', same_date)
-fetch_heartrate(same_date)
-fetch_hourly_steps(same_date)
-fetch_activities(next_date) #Special one requires next date for same day one as the argument is afterdate
+    for wait in tqdm.tqdm(range(1800)):
+        sleep(1)
 
-points.append({"measurement": "last_database_update", "time": LOCAL_TIMEZONE.localize(datetime.now()).astimezone(pytz.utc).isoformat(), "fields": {"value": 1}})
 
-try:
-    client.write_points(points)
-except InfluxDBClientError as err:
-    filehandle.write("\nUnable to write points to InfluxDB: %s \n" % (err))
-    print("\nUnable to write points to InfluxDB: %s \n" % (err))
-    sys.exit()
-
-filehandle.write("\nSuccessfully wrote %s data points to InfluxDB\n" % (len(points)))
-print("Successfully wrote %s data points to InfluxDB" % (len(points)))
-filehandle.close()
